@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { MatButton } from '@angular/material/button';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-root',
@@ -67,7 +68,7 @@ import { MatButton } from '@angular/material/button';
                 </defs>
               </svg>
             </div>
-            <button mat-button>
+            <button mat-button (click)="signIn()">
               Get started
             </button>
           </div>
@@ -216,5 +217,17 @@ import { MatButton } from '@angular/material/button';
   `
 })
 export class AppComponent {
+  constructor(
+    private readonly  authService: AuthService,
+  ) {}
+
   title = 'Google Photos Uploader';
+
+  ngOnInit() {
+    this.authService.clientLoad();
+  }
+
+  public async signIn() {
+    await this.authService.signIn();
+  }
 }

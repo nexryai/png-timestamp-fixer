@@ -15,7 +15,8 @@ import { MatButton } from '@angular/material/button';
         <div class="left-side">
           <h1>Welcome to <br> {{ title }}</h1>
           <p>
-            Congratulations! Your app is running. 🎉 <br>
+            This is an UNOFFICIAL Google Photos Uploader with timestamps fixer.
+            <br><br>
             <a href="/">Terms & Privacy</a>
           </p>
           <div class="start-button">

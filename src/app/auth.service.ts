@@ -23,7 +23,8 @@ export class AuthService {
     console.log('clientLoad');
   }
 
-  public async signIn(): Promise<void> {
+  public async signIn(): Promise<boolean> {
     const res = await this.authClient.signIn();
+    return res.hasGrantedScopes('https://www.googleapis.com/auth/photoslibrary.appendonly');
   }
 }

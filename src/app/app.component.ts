@@ -228,6 +228,9 @@ export class AppComponent {
   }
 
   public async signIn() {
-    await this.authService.signIn();
+    const ok = await this.authService.signIn();
+    if (!ok) {
+      alert('You must grant the permission to use this app.');
+    }
   }
 }

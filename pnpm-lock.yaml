@@ -61,6 +61,9 @@ devDependencies:
   '@types/gapi.auth2':
     specifier: ^0.0.61
     version: 0.0.61
+  '@types/gapi.client.photoslibrary':
+    specifier: ^1.0.0
+    version: 1.0.0
   '@types/jasmine':
     specifier: ~5.1.0
     version: 5.1.5
@@ -3170,6 +3173,16 @@ packages:
     resolution: {integrity: sha512-cn+omiRoE/LTxZncnVl1QhcLggOT0sJ8Yz9RXIsw5R2zLyRf+0o6kaZzJ/Gr3Sxz6i7J/+PbXAF8yeZipCaiWw==}
     dependencies:
       '@types/gapi': 0.0.47
+    dev: true
+
+  /@types/gapi.client.photoslibrary@1.0.0:
+    resolution: {integrity: sha512-MWMgdj7lfUpIaXbAw4mazqxpNas3b4mncpwrsh9c/MmZi0tvLCZ29tpgXNUq1uKqMEPjcTtGmyViTqG1STBJMg==}
+    dependencies:
+      '@types/gapi.client': 1.0.8
+    dev: true
+
+  /@types/gapi.client@1.0.8:
+    resolution: {integrity: sha512-qJQUmmumbYym3Amax0S8CVzuSngcXsC1fJdwRS2zeW5lM63zXkw4wJFP+bG0jzgi0R6EsJKoHnGNVTDbOyG1ng==}
     dev: true
 
   /@types/gapi@0.0.47:

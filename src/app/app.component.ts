@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 
 import { MatButton } from '@angular/material/button';
 import { AuthService } from './auth.service';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 enum AuthState {
   SignedIn,
@@ -15,19 +16,30 @@ enum AuthState {
   imports: [
     RouterOutlet,
     MatButton,
+    MatProgressBar,
   ],
   template: `
     <main class="main">
       <div class="content">
         <div class="left-side">
           @if (authState() === AuthState.Checking) {
-            <p>aaaa</p>
+            <p>Loading...</p>
           } @else if (authState() === AuthState.SignedIn) {
-            <p>bbbb</p>
+            <h2>Please select files to upload</h2>
+            <p class="progress-message">
+              Waiting for you to select files to upload.
+            </p>
+            <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
+            <div class="start-button">
+              <button mat-button (click)="signIn()">
+                Select files
+              </button>
+            </div>
           } @else {
             <h1>Welcome to <br> {{ title }}</h1>
             <p>
-              This is an UNOFFICIAL Google Photos Uploader with timestamps fixer.
+              This is an UNOFFICIAL Google Photos Uploader with timestamps fixer.<br>
+              Note: Only png files are supported.
               <br><br>
               <a href="/">Terms & Privacy</a>
             </p>
@@ -197,6 +209,10 @@ enum AuthState {
       margin-inline: 0.5rem;
     }
 
+    .progress-message {
+      margin-bottom: 6px;
+    }
+
     .start-button {
       width: 550px;
       display: flex;
@@ -236,7 +252,7 @@ export class AppComponent {
     private readonly  authService: AuthService,
   ) {}
 
-  title = 'Google Photos Uploader';
+  title = 'PNG Timestamp Fixer';
 
   ngOnInit() {
     this.authService.initClient();

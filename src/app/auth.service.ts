@@ -1,30 +1,72 @@
-/// <reference types="gapi"/>
-/// <reference types="gapi.auth2"/>
-
 import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private authClient!: gapi.auth2.GoogleAuth;
+  private clientId = '491654368730-sdjjubefa3b3ulsm8h8gvhkosclthn27.apps.googleusercontent.com';
+  private accessToken: string | null = null;
 
-  public clientLoad(): void {
-    // gapi.authインスタンスを使用できるようにロードする(scopeはOAuthの同意画面で設定したScopeを指定)
-    gapi.load('client:auth2', () => {
-      this.authClient = gapi.auth2.init({
-        client_id: '491654368730-sdjjubefa3b3ulsm8h8gvhkosclthn27.apps.googleusercontent.com',
-        fetch_basic_profile: true,
-        scope: 'openid https://www.googleapis.com/auth/photoslibrary.appendonly',
-      });
-      gapi.client.init({
-        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/photoslibrary/v1/rest']
-      })
+  public initClient() {
+    // Google Identity Services クライアントを初期化
+    //@ts-ignore
+    google.accounts.oauth2.initTokenClient({
+      client_id: this.clientId,
+      scope: 'https://www.googleapis.com/auth/photoslibrary.appendonly',
+      //@ts-ignore
+      callback: (response: google.accounts.oauth2.TokenResponse) => {
+        this.accessToken = response.access_token;
+        console.log('Access token acquired:', this.accessToken);
+      },
     });
-
-    console.log('clientLoad');
   }
 
-  public async signIn(): Promise<boolean> {
-    const res = await this.authClient.signIn();
-    return res.hasGrantedScopes('https://www.googleapis.com/auth/photoslibrary.appendonly');
+  /**
+   * Google Photos API にアクセスするためのトークンを取得する
+   */
+  public async requestAccessToken(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      //@ts-ignore
+      const tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: this.clientId,
+        scope: 'https://www.googleapis.com/auth/photoslibrary.appendonly',
+        //@ts-ignore
+        callback: (response) => {
+          if (response.access_token) {
+            this.accessToken = response.access_token;
+            resolve();
+          } else {
+            reject('Failed to acquire access token.');
+          }
+        },
+      });
+
+      // トークンのリクエストを開始
+      tokenClient.requestAccessToken();
+    });
+  }
+
+  /**
+   * サインイン状態を確認する
+   */
+  public isSignedIn(): boolean {
+    return !!this.accessToken;
+  }
+
+  public async getUserName(): Promise<string> {
+    if (!this.accessToken) {
+      throw new Error('Access token is not available.');
+    }
+
+    const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch user information.');
+    }
+
+    const data = await response.json();
+    return data.name;
   }
 }

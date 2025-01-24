@@ -1,5 +1,6 @@
 use little_exif::{metadata::Metadata, exif_tag::ExifTag, filetype::FileExtension};
 use wasm_bindgen::prelude::*;
+use crate::log;
 use crate::regex::extract_timestamp_string;
 
 // WASMにエクスポートする関数
@@ -23,6 +24,8 @@ pub fn embed_timestamp_from_filename(mut image_buffer: Vec<u8>, filename: String
         Some(timestamp) => timestamp,
         None => return Err(JsValue::from_str("Timestamp not found")),
     };
+
+    log(&format!("Detected timestamp: {}", timestamp));
 
     // EXIFメタデータの作成
     let mut metadata = match Metadata::new_from_vec(&image_buffer, file_type) {

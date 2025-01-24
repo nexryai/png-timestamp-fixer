@@ -4,6 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { MatButton } from '@angular/material/button';
 import { AuthService } from './auth.service';
 import { MatProgressBar } from '@angular/material/progress-bar';
+import { ExifService } from './exif.service';
 
 enum AuthState {
   SignedIn,
@@ -24,14 +25,22 @@ enum AuthState {
         <div class="left-side">
           @if (authState() === AuthState.Checking) {
             <p>Loading...</p>
-          } @else if (authState() === AuthState.SignedIn) {
+          } @else if (authState() === AuthState.SignedOut) {
             <h2>Please select files to upload</h2>
             <p class="progress-message">
               Waiting for you to select files to upload.
             </p>
             <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
             <div class="start-button">
-              <button mat-button (click)="signIn()">
+              <input
+                type="file"
+                id="fileElem"
+                multiple
+                accept="image/*"
+                style="display:none"
+                (change)="handleFiles($any($event.target).files)"
+              />
+              <button mat-button (click)="selectAndUploadFiles()">
                 Select files
               </button>
             </div>
@@ -249,7 +258,8 @@ export class AppComponent {
   public authState = signal(AuthState.Checking);
 
   constructor(
-    private readonly  authService: AuthService,
+    private readonly authService: AuthService,
+    private readonly exifService: ExifService,
   ) {}
 
   title = 'PNG Timestamp Fixer';
@@ -268,5 +278,31 @@ export class AppComponent {
       console.log(await this.authService.getUserName());
       this.authState.set(AuthState.SignedIn);
     }
+  }
+
+  public async handleFiles(files: FileList) {
+    for (let i = 0; i < files.length; i++) {
+      const buffer = new Uint8Array(await files[i].arrayBuffer());
+      const filename = files[i].name;
+
+      console.log(filename);
+
+      const image = await this.exifService.getExif(buffer, filename);
+
+      // download the image
+      const blob = new Blob([image], { type: 'image/png' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+
+      console.log('done');
+    }
+  }
+
+  public async selectAndUploadFiles() {
+    const fileElem = document.getElementById('fileElem') as HTMLInputElement;
+    fileElem.click();
   }
 }

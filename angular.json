@@ -24,6 +24,10 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*.wasm",
+                "input": "src/wasm/pkg"
               }
             ],
             "styles": [

@@ -1,5 +1,6 @@
 mod utils;
 mod timestamp;
+mod regex;
 
 use wasm_bindgen::prelude::*;
 use console_error_panic_hook;

@@ -4,7 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { MatButton } from '@angular/material/button';
 import { AuthService } from './auth.service';
 import { MatProgressBar } from '@angular/material/progress-bar';
-import { ExifService } from './exif.service';
+import { ImageService } from './image.service';
 
 enum AuthState {
   SignedIn,
@@ -259,7 +259,7 @@ export class AppComponent {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly exifService: ExifService,
+    private readonly imageService: ImageService,
   ) {}
 
   title = 'PNG Timestamp Fixer';
@@ -285,19 +285,11 @@ export class AppComponent {
       const buffer = new Uint8Array(await files[i].arrayBuffer());
       const filename = files[i].name;
 
-      console.log(filename);
-
-      const image = await this.exifService.getExif(buffer, filename);
-
-      // download the image
-      const blob = new Blob([image], { type: 'image/png' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-
-      console.log('done');
+      try {
+        await this.imageService.uploadToGooglePhotos(buffer, filename);
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 

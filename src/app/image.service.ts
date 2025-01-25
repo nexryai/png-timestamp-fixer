@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
-export class ExifService {
-  private exifWorker: Worker;
+export class ImageService {
+  private worker: Worker;
 
   constructor() {
-    this.exifWorker = new Worker(new URL('./workers/exif.ts', import.meta.url));
+    this.worker = new Worker(new URL('./workers/image.ts', import.meta.url));
     console.log('ExifService initialized');
   }
 
-  public async getExif(file: Uint8Array, filename: string): Promise<Uint8Array> {
+  public async uploadToGooglePhotos(file: Uint8Array, filename: string): Promise<Uint8Array> {
     return new Promise((resolve, reject) => {
-      this.exifWorker.onmessage = (event) => {
+      this.worker.onmessage = (event) => {
         if (event.data.error) {
           console.error('Error in worker:', event.data.error);
           reject(event.data.error);
@@ -22,7 +22,7 @@ export class ExifService {
       };
 
       console.log('Sending image to worker...');
-      this.exifWorker.postMessage({ file, filename });
+      this.worker.postMessage({ file, filename });
     });
   }
 }

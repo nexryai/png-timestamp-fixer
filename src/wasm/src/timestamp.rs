@@ -1,6 +1,7 @@
 use little_exif::{metadata::Metadata, exif_tag::ExifTag, filetype::FileExtension};
 use wasm_bindgen::prelude::*;
 use crate::log;
+use crate::png::get_creation_time_from_chunk;
 use crate::regex::extract_timestamp_string;
 
 // WASMにエクスポートする関数
@@ -20,10 +21,24 @@ pub fn embed_timestamp_from_filename(mut image_buffer: Vec<u8>, filename: String
         _ => return Err(JsValue::from_str("Invalid file type")),
     };
 
-    let timestamp = match extract_timestamp_string(&filename, 0) {
-        Some(timestamp) => timestamp,
-        None => return Err(JsValue::from_str("Timestamp not found")),
-    };
+    let mut timestamp: String;
+
+    // PNGならメタデータからのタイムスタンプの取得を試みる（失敗しても無視）
+    if file_type == (FileExtension::PNG { as_zTXt_chunk: false }) {
+        timestamp = match get_creation_time_from_chunk(&image_buffer, 9) {
+            Some(timestamp) => timestamp,
+            None => match extract_timestamp_string(&filename, 0) {
+                Some(timestamp) => timestamp,
+                None => return Err(JsValue::from_str("Timestamp not found")),
+            },
+        };
+    } else {
+        // それ以外のファイル形式ならファイル名からタイムスタンプを取得
+        timestamp = match extract_timestamp_string(&filename, 0) {
+            Some(timestamp) => timestamp,
+            None => return Err(JsValue::from_str("Timestamp not found")),
+        };
+    }
 
     log(&format!("Detected timestamp: {}", timestamp));
 

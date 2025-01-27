@@ -29,7 +29,7 @@ enum AuthState {
         <div class="left-side">
           @if (authState() === AuthState.Checking) {
             <p>Loading...</p>
-          } @else if (authState() === AuthState.SignedOut) {
+          } @else if (authState() === AuthState.SignedIn) {
             <h2>Please select files to upload</h2>
             <p class="progress-message">
               Waiting for you to select files to upload.
@@ -79,6 +79,7 @@ enum AuthState {
 export class AppComponent {
   public AuthState = AuthState;
   public authState = signal(AuthState.Checking);
+  private accessToken = '';
 
   constructor(
     private readonly authService: AuthService,
@@ -99,6 +100,7 @@ export class AppComponent {
       alert('You must grant the permission to use this app.');
     } else {
       console.log(await this.authService.getUserName());
+      this.accessToken = this.authService.getAccessToken();
       this.authState.set(AuthState.SignedIn);
     }
   }
@@ -109,17 +111,7 @@ export class AppComponent {
       const filename = files[i].name;
 
       try {
-        const image = await this.imageService.uploadToGooglePhotos(buffer, filename);
-
-        // download the image
-        const blob = new Blob([image], { type: 'image/png' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(url);
-
+        await this.imageService.uploadToGooglePhotos(buffer, filename, this.accessToken);
       } catch (e) {
         console.error(e);
       }

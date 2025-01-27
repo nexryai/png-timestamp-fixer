@@ -19,9 +19,6 @@ export class AuthService {
     });
   }
 
-  /**
-   * Google Photos API にアクセスするためのトークンを取得する
-   */
   public async requestAccessToken(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       //@ts-ignore
@@ -44,11 +41,15 @@ export class AuthService {
     });
   }
 
-  /**
-   * サインイン状態を確認する
-   */
   public isSignedIn(): boolean {
     return !!this.accessToken;
+  }
+
+  public getAccessToken(): string {
+    if (!this.accessToken) {
+      throw new Error('Access token is not available.');
+    }
+    return this.accessToken;
   }
 
   public async getUserName(): Promise<string> {

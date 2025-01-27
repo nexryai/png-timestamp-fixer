@@ -30,11 +30,11 @@ enum AuthState {
           @if (authState() === AuthState.Checking) {
             <p>Loading...</p>
           } @else if (authState() === AuthState.SignedIn) {
-            <h2>Please select files to upload</h2>
+            <h2>{{ uploadStatusText }}</h2>
             <p class="progress-message">
-              Waiting for you to select files to upload.
+              {{ uploadStatusSubText }}
             </p>
-            <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" [value]="uploadProgress" [bufferValue]="uploadProgress" />
             <div class="start-button">
               <input
                 type="file"
@@ -77,8 +77,11 @@ enum AuthState {
   `
 })
 export class AppComponent {
-  public AuthState = AuthState;
-  public authState = signal(AuthState.Checking);
+  protected AuthState = AuthState;
+  protected authState = signal(AuthState.Checking);
+  protected uploadStatusText = 'Please select files to upload.';
+  protected uploadStatusSubText = 'Waiting for you to select files to upload.';
+  protected uploadProgress = 0;
   private accessToken = '';
 
   constructor(
@@ -106,6 +109,10 @@ export class AppComponent {
   }
 
   public async handleFiles(files: FileList) {
+    this.uploadProgress = 0;
+    this.uploadStatusText = 'Uploading...';
+    this.uploadStatusSubText = 'Fixing timestamps and uploading to Google Photos...';
+
     for (let i = 0; i < files.length; i++) {
       const buffer = new Uint8Array(await files[i].arrayBuffer());
       const filename = files[i].name;
@@ -115,7 +122,13 @@ export class AppComponent {
       } catch (e) {
         console.error(e);
       }
+
+      this.uploadProgress = ((i + 1) / files.length) * 100;
     }
+
+    this.uploadProgress = 100;
+    this.uploadStatusText = 'Done!';
+    this.uploadStatusSubText = 'All files have been uploaded to Google Photos.';
   }
 
   public async selectAndUploadFiles() {

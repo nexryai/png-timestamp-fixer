@@ -245,7 +245,17 @@ export class AppComponent {
       const filename = files[i].name;
 
       try {
-        await this.imageService.uploadToGooglePhotos(buffer, filename);
+        const image = await this.imageService.uploadToGooglePhotos(buffer, filename);
+
+        // download the image
+        const blob = new Blob([image], { type: 'image/png' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+
       } catch (e) {
         console.error(e);
       }

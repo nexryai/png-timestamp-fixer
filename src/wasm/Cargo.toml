@@ -21,6 +21,8 @@ console_error_panic_hook = { version = "0.1.7", optional = true }
 little_exif = "0.6.2"
 chrono = "0.4.39"
 regex = "1.11.1"
+crc32fast = "1.4.2"
+kamadak-exif = "0.6.1"
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.34"

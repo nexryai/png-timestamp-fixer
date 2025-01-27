@@ -1,7 +1,7 @@
 use little_exif::{metadata::Metadata, exif_tag::ExifTag, filetype::FileExtension};
 use wasm_bindgen::prelude::*;
 use crate::log;
-use crate::png::get_creation_time_from_chunk;
+use crate::png::{embed_exif_time, get_creation_time_from_chunk};
 use crate::regex::extract_timestamp_string;
 
 // WASMにエクスポートする関数
@@ -21,7 +21,7 @@ pub fn embed_timestamp_from_filename(mut image_buffer: Vec<u8>, filename: String
         _ => return Err(JsValue::from_str("Invalid file type")),
     };
 
-    let mut timestamp: String;
+    let timestamp: String;
 
     // PNGならメタデータからのタイムスタンプの取得を試みる（失敗しても無視）
     if file_type == (FileExtension::PNG { as_zTXt_chunk: false }) {
@@ -41,6 +41,18 @@ pub fn embed_timestamp_from_filename(mut image_buffer: Vec<u8>, filename: String
     }
 
     log(&format!("Detected timestamp: {}", timestamp));
+
+    // pngの場合は、exifチャンクを挿入する
+    if file_type == (FileExtension::PNG { as_zTXt_chunk: false }) {
+        match embed_exif_time(timestamp, &image_buffer) {
+            Ok(new_image_buffer) => {
+                return Ok(new_image_buffer);
+            }
+            Err(e) => {
+                return Err(JsValue::from_str(&format!("Error embedding EXIF data: {}", e)));
+            }
+        }
+    }
 
     // EXIFメタデータの作成
     let mut metadata = match Metadata::new_from_vec(&image_buffer, file_type) {

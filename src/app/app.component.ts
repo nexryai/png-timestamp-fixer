@@ -113,6 +113,8 @@ export class AppComponent {
     this.uploadStatusText = 'Uploading...';
     this.uploadStatusSubText = 'Fixing timestamps and uploading to Google Photos...';
 
+    let failed = 0;
+
     for (let i = 0; i < files.length; i++) {
       const buffer = new Uint8Array(await files[i].arrayBuffer());
       const filename = files[i].name;
@@ -121,6 +123,7 @@ export class AppComponent {
         await this.imageService.uploadToGooglePhotos(buffer, filename, this.accessToken);
       } catch (e) {
         console.error(e);
+        failed++;
       }
 
       this.uploadProgress = ((i + 1) / files.length) * 100;
@@ -128,7 +131,9 @@ export class AppComponent {
 
     this.uploadProgress = 100;
     this.uploadStatusText = 'Done!';
-    this.uploadStatusSubText = 'All files have been uploaded to Google Photos.';
+    this.uploadStatusSubText = failed > 0
+      ? `Failed to upload ${failed} files.`
+      : 'All files uploaded successfully.';
   }
 
   public async selectAndUploadFiles() {

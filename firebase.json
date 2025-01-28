@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "source": ".",
+    "public": "dist/google-photos-uploader/browser",
     "ignore": [
       "firebase.json",
       "**/.*",

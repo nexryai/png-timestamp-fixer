@@ -102,7 +102,7 @@ export class AppComponent {
     if (!ok) {
       alert('You must grant the permission to use this app.');
     } else {
-      console.log(await this.authService.getUserName());
+      //console.log(await this.authService.getUserName());
       this.accessToken = this.authService.getAccessToken();
       this.authState.set(AuthState.SignedIn);
     }

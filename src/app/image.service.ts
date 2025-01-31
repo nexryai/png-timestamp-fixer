@@ -29,12 +29,16 @@ export class ImageService {
     const image = await this.fixExif(file, filename);
     console.log('Uploading image to Google Photos...');
 
+    // UUIDを生成
+    const uploadName = crypto.randomUUID();
+
     const uploaded = await fetch('https://photoslibrary.googleapis.com/v1/uploads', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/octet-stream',
-        'X-Goog-Upload-File-Name': filename,
+        // HTTPヘッダーに非ASCII文字は含められないのでUUIDにする
+        'X-Goog-Upload-File-Name': uploadName,
         'X-Goog-Upload-Protocol': 'raw',
       },
       body: image,

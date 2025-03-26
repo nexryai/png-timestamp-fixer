@@ -97,7 +97,7 @@ export class AppComponent {
 
   public async setOutputDirectory() {
     //@ts-ignore
-    this.directoryHandle = await window.showDirectoryPicker();
+    this.directoryHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
 
     if (this.directoryHandle) {
       this.loadState.set(LoadState.Ready);

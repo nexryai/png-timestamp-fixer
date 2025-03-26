@@ -96,18 +96,12 @@ export class AppComponent {
   }
 
   public async setOutputDirectory() {
-    /*
-      SecurityErrorになる
+    //@ts-ignore
+    this.directoryHandle = await window.showDirectoryPicker();
 
-      //@ts-ignore
-      this.directoryHandle = await window.showDirectoryPicker();
-
-      if (this.directoryHandle) {
-        this.loadState.set(LoadState.Ready);
-      }
-    */
-
-    this.loadState.set(LoadState.Ready);
+    if (this.directoryHandle) {
+      this.loadState.set(LoadState.Ready);
+    }
   }
 
   public async handleFiles(files: FileList) {
@@ -117,8 +111,8 @@ export class AppComponent {
 
     let failed = 0;
 
-    // @ts-ignore
-    this.directoryHandle = await window.showDirectoryPicker();
+    //@ts-ignore
+    await this.directoryHandle!.queryPermission({ mode: 'readwrite' });
 
     for (let i = 0; i < files.length; i++) {
       const buffer = new Uint8Array(await files[i].arrayBuffer());

@@ -83,6 +83,9 @@ export class ImageService {
       const fixedImage = await this.fixExif(file, filename);
 
       // ファイルハンドルを取得
+      // query permission
+      //@ts-ignore
+      await directoryHandle.queryPermission({ mode: 'readwrite' });
       const fileHandle = await directoryHandle.getFileHandle(filename, { create: true });
 
       // 書き込み用ストリームを取得

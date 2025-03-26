@@ -76,4 +76,28 @@ export class ImageService {
     console.log('Image uploaded successfully');
     return;
   }
+
+  public async saveToDirectory(file: Uint8Array, filename: string, directoryHandle: FileSystemDirectoryHandle): Promise<void> {
+    try {
+      // Exif データを修正
+      const fixedImage = await this.fixExif(file, filename);
+
+      // ファイルハンドルを取得
+      const fileHandle = await directoryHandle.getFileHandle(filename, { create: true });
+
+      // 書き込み用ストリームを取得
+      const writable = await fileHandle.createWritable();
+
+      // 修正済みの画像データを書き込み
+      await writable.write(fixedImage);
+
+      // 書き込みを閉じる
+      await writable.close();
+
+      console.log(`Fixed image saved to ${filename}`);
+    } catch (error) {
+      console.error('Failed to save image:', error);
+      throw new Error('Could not save file to directory');
+    }
+  }
 }

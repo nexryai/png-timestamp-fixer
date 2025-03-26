@@ -7,9 +7,9 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 import { ImageService } from './image.service';
 import { NgOptimizedImage } from '@angular/common';
 
-enum AuthState {
-  SignedIn,
-  SignedOut,
+enum LoadState {
+  Ready,
+  PermissionRequired,
   Checking,
 }
 
@@ -27,9 +27,9 @@ enum AuthState {
     <main class="main">
       <div class="content">
         <div class="left-side">
-          @if (authState() === AuthState.Checking) {
+          @if (loadState() === LoadState.Checking) {
             <p>Loading...</p>
-          } @else if (authState() === AuthState.SignedIn) {
+          } @else if (loadState() === LoadState.Ready) {
             <h2>{{ uploadStatusText }}</h2>
             <p class="progress-message">
               {{ uploadStatusSubText }}
@@ -57,7 +57,7 @@ enum AuthState {
               <a href="/">Terms & Privacy</a>
             </p>
             <div class="start-button">
-              <button mat-button (click)="signIn()">
+              <button mat-button (click)="setOutputDirectory()">
                 Get started
               </button>
             </div>
@@ -77,41 +77,37 @@ enum AuthState {
   `
 })
 export class AppComponent {
-  protected AuthState = AuthState;
-  protected authState = signal(AuthState.Checking);
-  protected uploadStatusText = 'Please select files to upload.';
-  protected uploadStatusSubText = 'Waiting for you to select files to upload.';
+  protected LoadState = LoadState;
+  protected loadState = signal(LoadState.Ready);
+  protected uploadStatusText = 'Please select files to fix timestamp.';
+  protected uploadStatusSubText = 'Waiting for you to select files to fix.';
   protected uploadProgress = 0;
-  private accessToken = '';
+  private directoryHandle: FileSystemDirectoryHandle | undefined = undefined;
 
   constructor(
     private readonly authService: AuthService,
     private readonly imageService: ImageService,
-  ) {}
+  ) { }
 
   title = 'PNG Timestamp Fixer';
 
   ngOnInit() {
     this.authService.initClient();
-    this.authState.set(this.authService.isSignedIn() ? AuthState.SignedIn : AuthState.SignedOut);
   }
 
-  public async signIn() {
-    await this.authService.requestAccessToken();
-    const ok = this.authService.isSignedIn();
-    if (!ok) {
-      alert('You must grant the permission to use this app.');
-    } else {
-      //console.log(await this.authService.getUserName());
-      this.accessToken = this.authService.getAccessToken();
-      this.authState.set(AuthState.SignedIn);
+  public async setOutputDirectory() {
+    //@ts-ignore
+    this.directoryHandle = await window.showDirectoryPicker();
+
+    if (this.directoryHandle) {
+      this.loadState.set(LoadState.Ready);
     }
   }
 
   public async handleFiles(files: FileList) {
     this.uploadProgress = 0;
-    this.uploadStatusText = 'Uploading...';
-    this.uploadStatusSubText = 'Fixing timestamps and uploading to Google Photos...';
+    this.uploadStatusText = 'Processing...';
+    this.uploadStatusSubText = 'Fixing timestamps and saving to directory...';
 
     let failed = 0;
 
@@ -120,7 +116,8 @@ export class AppComponent {
       const filename = files[i].name;
 
       try {
-        await this.imageService.uploadToGooglePhotos(buffer, filename, this.accessToken);
+        //@ts-ignore
+        await this.imageService.saveToDirectory(buffer, filename, await window.showDirectoryPicker());
       } catch (e) {
         console.error(e);
         failed++;

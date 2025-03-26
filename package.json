@@ -29,6 +29,7 @@
     "@angular/cli": "^19.1.4",
     "@angular/compiler-cli": "^19.1.0",
     "@types/jasmine": "~5.1.0",
+    "@types/wicg-file-system-access": "^2023.10.5",
     "firebase-tools": "^13.29.2",
     "jasmine-core": "~5.5.0",
     "karma": "~6.4.0",

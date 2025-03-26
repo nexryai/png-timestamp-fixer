@@ -125,7 +125,7 @@ export class AppComponent {
       const filename = files[i].name;
 
       try {
-        await this.imageService.saveToDirectory(buffer, filename, this.directoryHandle);
+        await this.imageService.saveToDirectory(buffer, filename, this.directoryHandle!);
       } catch (e) {
         console.error(e);
         failed++;

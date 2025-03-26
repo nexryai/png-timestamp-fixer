@@ -51,8 +51,8 @@ enum LoadState {
           } @else {
             <h1>Welcome to <br> {{ title }}</h1>
             <p>
-              This is an UNOFFICIAL Google Photos Uploader with timestamps fixer.<br>
-              Note: Only png files are supported.
+              This is a tool that embeds an EXIF format timestamp into a png file, <br>
+              allowing it to be handled with the correct timestamp in Google Photos and photo viewers.
               <br><br>
               <a href="/">Terms & Privacy</a>
             </p>
@@ -78,7 +78,7 @@ enum LoadState {
 })
 export class AppComponent {
   protected LoadState = LoadState;
-  protected loadState = signal(LoadState.Ready);
+  protected loadState = signal(LoadState.PermissionRequired);
   protected uploadStatusText = 'Please select files to fix timestamp.';
   protected uploadStatusSubText = 'Waiting for you to select files to fix.';
   protected uploadProgress = 0;
@@ -96,12 +96,18 @@ export class AppComponent {
   }
 
   public async setOutputDirectory() {
-    //@ts-ignore
-    this.directoryHandle = await window.showDirectoryPicker();
+    /*
+      SecurityErrorになる
 
-    if (this.directoryHandle) {
-      this.loadState.set(LoadState.Ready);
-    }
+      //@ts-ignore
+      this.directoryHandle = await window.showDirectoryPicker();
+
+      if (this.directoryHandle) {
+        this.loadState.set(LoadState.Ready);
+      }
+    */
+
+    this.loadState.set(LoadState.Ready);
   }
 
   public async handleFiles(files: FileList) {
@@ -111,13 +117,15 @@ export class AppComponent {
 
     let failed = 0;
 
+    // @ts-ignore
+    this.directoryHandle = await window.showDirectoryPicker();
+
     for (let i = 0; i < files.length; i++) {
       const buffer = new Uint8Array(await files[i].arrayBuffer());
       const filename = files[i].name;
 
       try {
-        //@ts-ignore
-        await this.imageService.saveToDirectory(buffer, filename, await window.showDirectoryPicker());
+        await this.imageService.saveToDirectory(buffer, filename, this.directoryHandle);
       } catch (e) {
         console.error(e);
         failed++;
@@ -129,8 +137,8 @@ export class AppComponent {
     this.uploadProgress = 100;
     this.uploadStatusText = 'Done!';
     this.uploadStatusSubText = failed > 0
-      ? `Failed to upload ${failed} files.`
-      : 'All files uploaded successfully.';
+      ? `Failed to process ${failed} files.`
+      : 'All files processed successfully.';
   }
 
   public async selectAndUploadFiles() {

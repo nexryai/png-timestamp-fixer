@@ -59,8 +59,8 @@ devDependencies:
     specifier: ~5.1.7
     version: 5.1.7
   '@types/wicg-file-system-access':
-    specifier: ^2023.10.5
-    version: 2023.10.5
+    specifier: ^2023.10.6
+    version: 2023.10.6
   firebase-tools:
     specifier: ^14.3.0
     version: 14.3.0
@@ -3753,8 +3753,8 @@ packages:
     resolution: {integrity: sha512-6WaYesThRMCl19iryMYP7/x2OVgCtbIVflDGFpWnb9irXI3UjYE4AzmYuiUKY1AJstGijoY+MgUszMgRxIYTYw==}
     dev: true
 
-  /@types/wicg-file-system-access@2023.10.5:
-    resolution: {integrity: sha512-e9kZO9kCdLqT2h9Tw38oGv9UNzBBWaR1MzuAavxPcsV/7FJ3tWbU6RI3uB+yKIDPGLkGVbplS52ub0AcRLvrhA==}
+  /@types/wicg-file-system-access@2023.10.6:
+    resolution: {integrity: sha512-YO/183gNRzZFSdKu+ikkD7ambAj4PhgjFAF2A/Mw/7wroSF6ne8r804RkpZzqrJ/F6DO2/IYlQF/ULOZ/bhKyA==}
     dev: true
 
   /@types/ws@8.18.1:

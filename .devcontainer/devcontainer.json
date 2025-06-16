@@ -28,7 +28,10 @@
             "settings": {
                 "editor.linkedEditing": true,
                 "editor.formatOnPaste": true,
-                "editor.formatOnSave": true
+                "editor.formatOnSave": true,
+                "rust-analyzer.linkedProjects": [
+                    "/workspace/src/wasm/Cargo.toml"
+                ]
             }
         }
     }

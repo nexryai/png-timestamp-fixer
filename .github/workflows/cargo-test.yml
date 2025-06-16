@@ -1,0 +1,24 @@
+name: Run unit tests with cargo
+permissions: {}
+on: [push, pull_request]
+
+jobs:
+  unit_tests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Install cargo
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Run cargo test
+        run: cd src/wasm && cargo test

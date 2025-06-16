@@ -82,19 +82,13 @@ export class ImageService {
       // Exif データを修正
       const fixedImage = await this.fixExif(file, filename);
 
-      // ファイルハンドルを取得
       // query permission
       //@ts-ignore
       await directoryHandle.queryPermission({ mode: 'readwrite' });
       const fileHandle = await directoryHandle.getFileHandle(filename, { create: true });
 
-      // 書き込み用ストリームを取得
       const writable = await fileHandle.createWritable();
-
-      // 修正済みの画像データを書き込み
       await writable.write(fixedImage);
-
-      // 書き込みを閉じる
       await writable.close();
 
       console.log(`Fixed image saved to ${filename}`);

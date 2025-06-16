@@ -213,7 +213,7 @@ mod tests {
 
     #[test]
     fn main() {
-        let file_path = "/Users/nexryai/test3.png";
+        let file_path = "./tests/data/test3.png";
         let mut file = File::open(file_path).unwrap();
         let mut buffer = Vec::new();
         file.read_to_end(&mut buffer).unwrap();
@@ -224,7 +224,7 @@ mod tests {
 
     #[test]
     fn test_embed_exif_time() {
-        let file_path = "/Users/nexryai/test3.png";
+        let file_path = "./tests/data/test3.png";
         let mut file = File::open(file_path).unwrap();
         let mut buffer = Vec::new();
         file.read_to_end(&mut buffer).unwrap();
@@ -233,7 +233,7 @@ mod tests {
         let new_png = embed_exif_time(exif_time, &buffer).unwrap();
 
         // write new png
-        let mut new_file = File::create("/Users/nexryai/test3_new.png").unwrap();
+        let mut new_file = File::create("./tests/data/test3_new.png").unwrap();
         new_file.write_all(&new_png).unwrap();
     }
 }

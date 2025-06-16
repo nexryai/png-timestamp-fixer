@@ -5,3 +5,9 @@ updates:
     target-branch: "main"
     schedule:
       interval: daily
+
+  - package-ecosystem: cargo
+    directory: "/src/wasm"
+    target-branch: "main"
+    schedule:
+      interval: daily

@@ -1,4 +1,4 @@
-use chrono::{NaiveDateTime, DateTime, Utc};
+use chrono::DateTime;
 use regex::Regex;
 
 pub fn extract_timestamp_string(input: &str, unix_time_offset: i32) -> Option<String> {
@@ -39,9 +39,7 @@ pub fn extract_timestamp_string(input: &str, unix_time_offset: i32) -> Option<St
                 let timestamp_str = caps.get(1).unwrap().as_str();
                 if let Ok(timestamp) = timestamp_str.parse::<i64>() {
                     // UNIXタイムスタンプをUTC日付に変換
-                    let naive_datetime = NaiveDateTime::from_timestamp_opt(timestamp, 0)?;
-                    // UTCに変換
-                    let datetime_utc: DateTime<Utc> = DateTime::from_utc(naive_datetime, Utc);
+                    let datetime_utc = DateTime::from_timestamp(timestamp, 0)?;
 
                     // オフセットを加算
                     let datetime_local = datetime_utc + chrono::Duration::hours(unix_time_offset as i64);

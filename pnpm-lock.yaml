@@ -65,8 +65,8 @@ devDependencies:
     specifier: ^14.7.0
     version: 14.7.0
   jasmine-core:
-    specifier: ~5.7.1
-    version: 5.7.1
+    specifier: ~5.8.0
+    version: 5.8.0
   karma:
     specifier: ~6.4.0
     version: 6.4.4
@@ -81,7 +81,7 @@ devDependencies:
     version: 5.1.0(karma@6.4.4)
   karma-jasmine-html-reporter:
     specifier: ~2.1.0
-    version: 2.1.0(jasmine-core@5.7.1)(karma-jasmine@5.1.0)(karma@6.4.4)
+    version: 2.1.0(jasmine-core@5.8.0)(karma-jasmine@5.1.0)(karma@6.4.4)
   typescript:
     specifier: ~5.7.2
     version: 5.7.3
@@ -7490,8 +7490,8 @@ packages:
     resolution: {integrity: sha512-VYz/BjjmC3klLJlLwA4Kw8ytk0zDSmbbDLNs794VnWmkcCB7I9aAL/D48VNQtmITyPvea2C3jdUMfc3kAoy0PQ==}
     dev: true
 
-  /jasmine-core@5.7.1:
-    resolution: {integrity: sha512-QnurrtpKsPoixxG2R3d1xP0St/2kcX5oTZyDyQJMY+Vzi/HUlu1kGm+2V8Tz+9lV991leB1l0xcsyz40s9xOOw==}
+  /jasmine-core@5.8.0:
+    resolution: {integrity: sha512-Q9dqmpUAfptwyueW3+HqBOkSuYd9I/clZSSfN97wXE/Nr2ROFNCwIBEC1F6kb3QXS9Fcz0LjFYSDQT+BiwjuhA==}
     dev: true
 
   /jest-worker@27.5.1:
@@ -7683,14 +7683,14 @@ packages:
       - supports-color
     dev: true
 
-  /karma-jasmine-html-reporter@2.1.0(jasmine-core@5.7.1)(karma-jasmine@5.1.0)(karma@6.4.4):
+  /karma-jasmine-html-reporter@2.1.0(jasmine-core@5.8.0)(karma-jasmine@5.1.0)(karma@6.4.4):
     resolution: {integrity: sha512-sPQE1+nlsn6Hwb5t+HHwyy0A1FNCVKuL1192b+XNauMYWThz2kweiBVW1DqloRpVvZIJkIoHVB7XRpK78n1xbQ==}
     peerDependencies:
       jasmine-core: ^4.0.0 || ^5.0.0
       karma: ^6.0.0
       karma-jasmine: ^5.0.0
     dependencies:
-      jasmine-core: 5.7.1
+      jasmine-core: 5.8.0
       karma: 6.4.4
       karma-jasmine: 5.1.0(karma@6.4.4)
     dev: true
@@ -9169,8 +9169,8 @@ packages:
       source-map-js: 1.2.1
     dev: true
 
-  /postcss@8.5.5:
-    resolution: {integrity: sha512-d/jtm+rdNT8tpXuHY5MMtcbJFBkhXE6593XVR9UoGCH8jSFGci7jGvMGH5RYd5PBJW+00NZQt6gf7CbagJCrhg==}
+  /postcss@8.5.6:
+    resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
       nanoid: 3.3.11
@@ -10984,7 +10984,7 @@ packages:
       fdir: 6.4.6(picomatch@4.0.2)
       less: 4.2.2
       picomatch: 4.0.2
-      postcss: 8.5.5
+      postcss: 8.5.6
       rollup: 4.43.0
       tinyglobby: 0.2.14
     optionalDependencies:

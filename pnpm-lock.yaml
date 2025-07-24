@@ -65,8 +65,8 @@ devDependencies:
     specifier: ^14.11.1
     version: 14.11.1
   jasmine-core:
-    specifier: ~5.8.0
-    version: 5.8.0
+    specifier: ~5.9.0
+    version: 5.9.0
   karma:
     specifier: ~6.4.0
     version: 6.4.4
@@ -81,7 +81,7 @@ devDependencies:
     version: 5.1.0(karma@6.4.4)
   karma-jasmine-html-reporter:
     specifier: ~2.1.0
-    version: 2.1.0(jasmine-core@5.8.0)(karma-jasmine@5.1.0)(karma@6.4.4)
+    version: 2.1.0(jasmine-core@5.9.0)(karma-jasmine@5.1.0)(karma@6.4.4)
   typescript:
     specifier: ~5.7.2
     version: 5.7.3
@@ -7628,8 +7628,8 @@ packages:
     resolution: {integrity: sha512-VYz/BjjmC3klLJlLwA4Kw8ytk0zDSmbbDLNs794VnWmkcCB7I9aAL/D48VNQtmITyPvea2C3jdUMfc3kAoy0PQ==}
     dev: true
 
-  /jasmine-core@5.8.0:
-    resolution: {integrity: sha512-Q9dqmpUAfptwyueW3+HqBOkSuYd9I/clZSSfN97wXE/Nr2ROFNCwIBEC1F6kb3QXS9Fcz0LjFYSDQT+BiwjuhA==}
+  /jasmine-core@5.9.0:
+    resolution: {integrity: sha512-OMUvF1iI6+gSRYOhMrH4QYothVLN9C3EJ6wm4g7zLJlnaTl8zbaPOr0bTw70l7QxkoM7sVFOWo83u9B2Fe2Zng==}
     dev: true
 
   /jest-worker@27.5.1:
@@ -7821,14 +7821,14 @@ packages:
       - supports-color
     dev: true
 
-  /karma-jasmine-html-reporter@2.1.0(jasmine-core@5.8.0)(karma-jasmine@5.1.0)(karma@6.4.4):
+  /karma-jasmine-html-reporter@2.1.0(jasmine-core@5.9.0)(karma-jasmine@5.1.0)(karma@6.4.4):
     resolution: {integrity: sha512-sPQE1+nlsn6Hwb5t+HHwyy0A1FNCVKuL1192b+XNauMYWThz2kweiBVW1DqloRpVvZIJkIoHVB7XRpK78n1xbQ==}
     peerDependencies:
       jasmine-core: ^4.0.0 || ^5.0.0
       karma: ^6.0.0
       karma-jasmine: ^5.0.0
     dependencies:
-      jasmine-core: 5.8.0
+      jasmine-core: 5.9.0
       karma: 6.4.4
       karma-jasmine: 5.1.0(karma@6.4.4)
     dev: true

@@ -28,7 +28,7 @@
     "@angular-devkit/build-angular": "^19.2.11",
     "@angular/cli": "^20.2.2",
     "@angular/compiler-cli": "^19.1.0",
-    "@types/jasmine": "~5.1.8",
+    "@types/jasmine": "~5.1.9",
     "@types/wicg-file-system-access": "^2023.10.6",
     "firebase-tools": "^14.15.2",
     "jasmine-core": "~5.9.0",

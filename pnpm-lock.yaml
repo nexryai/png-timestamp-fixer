@@ -56,8 +56,8 @@ devDependencies:
     specifier: ^19.1.0
     version: 19.1.3(@angular/compiler@19.1.3)(typescript@5.7.3)
   '@types/jasmine':
-    specifier: ~5.1.8
-    version: 5.1.8
+    specifier: ~5.1.9
+    version: 5.1.9
   '@types/wicg-file-system-access':
     specifier: ^2023.10.6
     version: 2023.10.6
@@ -4291,8 +4291,8 @@ packages:
       '@types/node': 22.15.17
     dev: true
 
-  /@types/jasmine@5.1.8:
-    resolution: {integrity: sha512-u7/CnvRdh6AaaIzYjCgUuVbREFgulhX05Qtf6ZtW+aOcjCKKVvKgpkPYJBFTZSHtFBYimzU4zP0V2vrEsq9Wcg==}
+  /@types/jasmine@5.1.9:
+    resolution: {integrity: sha512-8t4HtkW4wxiPVedMpeZ63n3vlWxEIquo/zc1Tm8ElU+SqVV7+D3Na2PWaJUp179AzTragMWVwkMv7mvty0NfyQ==}
     dev: true
 
   /@types/json-schema@7.0.15:

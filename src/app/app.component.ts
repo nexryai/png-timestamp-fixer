@@ -69,7 +69,7 @@ enum LoadState {
           <img ngSrc="/angular.svg" alt="Angular Logo" width="128" height="32"/>
         </div>
         <div class="copyright">
-          <p>©2025 nexryai All rights reserved.</p>
+          <p>©2025-2026 nexryai All rights reserved.</p>
         </div>
       </div>
     </main>

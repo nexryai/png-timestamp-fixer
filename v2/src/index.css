@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: "Inter Tight", "Inter", sans-serif;
+
+  --color-brand-pink: oklch(69.02% 0.277 332.77);
+  --color-brand-violet: oklch(53.18% 0.28 296.97);
+  --color-brand-blue: oklch(51.01% 0.274 263.83);
+  --color-brand-red: oklch(63.32% 0.24 31.68);
+  --color-brand-hot-red: oklch(61.42% 0.238 15.34);
+}
+
+@layer base {
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+  #root {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

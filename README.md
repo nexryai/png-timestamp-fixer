@@ -1,10 +1,73 @@
-# GooglePhotosUploader
+# React + TypeScript + Vite
 
-## What is this? (これは何)
-This tool solves the problem of timestamps being incorrect when uploaded to Google Photos because EXIF is not recorded when saving game console screenshots, etc. in PNG format.  
-It guesses the date and time of creation from the PNG's `tIME`, `tEXt/Creation Time` chunks, or if that is not available, from the file name, records it in an `eXIf` chunk, and uploads it.  
-Since no re-encoding occurs, the image quality is not degraded at all. All processing is done on the client side using WASM, so privacy is protected.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-PS5などのゲームコンソールでPNG形式のスクリーンショットを撮ると、Google Photosなど一部の写真管理アプリで撮影日時が正常に認識されない問題を解決するWebアプリです。  
-このツールはPNGの`tIME`, `tEXt/Creation Time`チャンク、それが利用できない場合はファイル名から撮影日時を推測し、PNGEXT 1.5.0 で仕様となった`eXIf`チャンクに書き込みます。
-画像の再エンコードは発生しないため画質が劣化することはありません。またブラウザのWASMを利用して処理を行うため、サーバーに画像がアップロードされることもありません。
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```

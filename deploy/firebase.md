@@ -162,26 +162,6 @@ printf 'GCP_WORKLOAD_IDENTITY_PROVIDER=%s\n' "${WORKLOAD_IDENTITY_PROVIDER_NAME}
 printf 'GCP_SERVICE_ACCOUNT=%s\n' "${SERVICE_ACCOUNT_EMAIL}"
 ```
 
-GitHub CLIへログインし、Repository Variablesとして登録します。SecretsやEnvironment Variablesではなく、Repository Variablesへ登録する必要があります。
-
-```bash
-gh auth status || gh auth login --hostname github.com --web
-
-gh variable set GCP_WORKLOAD_IDENTITY_PROVIDER \
-  --repo="${GITHUB_REPOSITORY}" \
-  --body="${WORKLOAD_IDENTITY_PROVIDER_NAME}"
-
-gh variable set GCP_SERVICE_ACCOUNT \
-  --repo="${GITHUB_REPOSITORY}" \
-  --body="${SERVICE_ACCOUNT_EMAIL}"
-
-gh variable list --repo="${GITHUB_REPOSITORY}"
-```
-
-GitHub CLIを利用しない場合は、GitHubの次の画面から同じ2つの値を登録します。
-
-`Repository Settings → Secrets and variables → Actions → Variables`
-
 ## 8. 設定確認
 
 ```bash
@@ -196,16 +176,3 @@ gcloud iam service-accounts get-iam-policy \
   --project="${PROJECT_ID}"
 ```
 
-IAMとWorkload Identity Federationの設定反映には数分かかる場合があります。反映後、対象ブランチへpushすると`.github/workflows/firebase-hosting-merge.yml`が実行されます。
-
-認証ステップで次のエラーが出る場合は、GitHub Repository Variablesが未設定または別のスコープに登録されています。
-
-```text
-the GitHub Action workflow must specify exactly one of
-"workload_identity_provider" or "credentials_json"
-```
-
-その場合は`gh variable list --repo="${GITHUB_REPOSITORY}"`で、次の2項目が存在することを確認してください。
-
-- `GCP_WORKLOAD_IDENTITY_PROVIDER`
-- `GCP_SERVICE_ACCOUNT`

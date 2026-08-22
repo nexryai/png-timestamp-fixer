@@ -237,9 +237,10 @@ function App() {
                     {/* ──── Step 0: Settings ──── */}
                     {appState === "settings" && (
                         <div className="animate-[fadeIn_0.3s_ease] text-center">
-                            <h1 className="mb-3 font-display text-2xl font-semibold tracking-tight sm:text-3xl">スクリーンショットの日時を修正</h1>
+                            <h1 className="mb-3 font-display text-2xl font-semibold tracking-tight sm:text-3xl">PNGファイルのタイムスタンプを修正</h1>
                             <p className="mx-auto mb-8 max-w-md text-sm leading-relaxed text-muted-foreground">
-                                ゲームコンソールなどで撮影したPNGスクリーンショットに EXIF形式のタイムスタンプを埋め込みます。
+                                VRChatやゲームコンソールなどで撮影したPNG画像に EXIF形式のタイムスタンプをメタデータとして埋め込みます。
+                                これにより、Google Photosやその他画像管理ソフトウェアでファイルシステム上のタイムスタンプに依存せずに、正しい撮影日時を扱えるようになります。
                                 <br />
                                 画質の劣化はありません。全ての処理はブラウザ上で完結します。
                             </p>
@@ -263,7 +264,7 @@ function App() {
                             </div>
 
                             <div className="mt-5">
-                                <p className="mb-4 text-xs text-muted-foreground">処理済みファイルの保存先ディレクトリを選択してください</p>
+                                <p className="mb-4 text-xs text-muted-foreground">処理済みファイルの保存先ディレクトリを選択してください。<br />現在、Chromium系のブラウザのみがサポートされています。</p>
                                 <button
                                     type="button"
                                     onClick={handleSetOutputDirectory}

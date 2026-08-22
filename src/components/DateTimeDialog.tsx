@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 
 import { IconCalendar, IconCheck, IconFile, IconPlayerSkipForward } from "@tabler/icons-react";
 
+import DatePicker from "./DatePicker";
+import TimePicker from "./TimePicker";
+
 interface DateTimeDialogProps {
     filename: string;
     imageUrl: string;
@@ -38,7 +41,7 @@ export default function DateTimeDialog({ filename, imageUrl, onConfirm, onSkip }
     const isValid = date.length > 0 && time.length > 0;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 p-4 animate-[fadeIn_0.2s_ease]" onClick={(e) => e.target === e.currentTarget && onSkip()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-400/35 backdrop-blur-md p-4 animate-[fadeIn_0.2s_ease]" onClick={(e) => e.target === e.currentTarget && onSkip()}>
             <div role="dialog" aria-modal="true" aria-labelledby="datetime-dialog-title" className="max-h-[90vh] w-full max-w-3xl animate-[scaleIn_0.2s_ease-out] overflow-auto rounded-xl border border-border bg-card shadow-xl">
                 {/* Header */}
                 <div className="border-b border-border px-6 py-5">
@@ -70,7 +73,7 @@ export default function DateTimeDialog({ filename, imageUrl, onConfirm, onSkip }
                             <label htmlFor="dialog-date" className="text-sm font-medium text-foreground">
                                 日付
                             </label>
-                            <input id="dialog-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-10 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-ring" />
+                            <DatePicker value={date} onChange={setDate} />
                         </div>
 
                         {/* Time input */}
@@ -78,7 +81,7 @@ export default function DateTimeDialog({ filename, imageUrl, onConfirm, onSkip }
                             <label htmlFor="dialog-time" className="text-sm font-medium text-foreground">
                                 時刻
                             </label>
-                            <input id="dialog-time" type="time" step="1" value={time} onChange={(e) => setTime(e.target.value)} className="h-10 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-ring" />
+                            <TimePicker value={time} onChange={setTime} />
                         </div>
 
                         {/* Preview */}

@@ -92,12 +92,7 @@ export default function TimezoneSelector({ value, onChange }: TimezoneSelectorPr
                 </button>
 
                 {isOpen && (
-                    <div
-                        role="listbox"
-                        aria-label="タイムゾーン"
-                        onKeyDown={handleMenuKeyDown}
-                        className="absolute left-0 right-0 top-[calc(100%+0.4rem)] z-50 max-h-56 overflow-y-auto rounded-md border border-border/80 bg-background/80 p-1 shadow-lg shadow-black/10 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70 animate-[fadeIn_0.12s_ease-out]"
-                    >
+                    <div role="listbox" aria-label="タイムゾーン" onKeyDown={handleMenuKeyDown} className="absolute left-0 right-0 top-[calc(100%+0.4rem)] z-50 max-h-56 overflow-y-auto rounded-md border border-border/80 bg-background/85 p-1 shadow-lg shadow-black/10 backdrop-blur-xl animate-[fadeIn_0.12s_ease-out]">
                         {options.map((opt) => (
                             <button
                                 key={opt.offset}

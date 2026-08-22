@@ -15,31 +15,27 @@ import { extractTimestampString } from "./regex";
  * @returns New PNG buffer with embedded eXIf chunk
  * @throws Error if filename doesn't end with .png or no timestamp is found
  */
-export function embedTimestampFromFilename(
-  imageBuffer: Uint8Array,
-  filename: string,
-  timezoneOffsetHours: number,
-): Uint8Array {
-  // Verify .png extension (case-insensitive)
-  if (!filename.toLowerCase().endsWith(".png")) {
-    throw new Error("File is not a PNG: " + filename);
-  }
+export function embedTimestampFromFilename(imageBuffer: Uint8Array, filename: string, timezoneOffsetHours: number): Uint8Array {
+    // Verify .png extension (case-insensitive)
+    if (!filename.toLowerCase().endsWith(".png")) {
+        throw new Error("File is not a PNG: " + filename);
+    }
 
-  // Try getting timestamp from PNG chunks first
-  let timestamp = getCreationTimeFromChunk(imageBuffer, timezoneOffsetHours);
+    // Try getting timestamp from PNG chunks first
+    let timestamp = getCreationTimeFromChunk(imageBuffer, timezoneOffsetHours);
 
-  // Fall back to extracting timestamp from filename
-  if (timestamp === null) {
-    timestamp = extractTimestampString(filename, 0);
-  }
+    // Fall back to extracting timestamp from filename
+    if (timestamp === null) {
+        timestamp = extractTimestampString(filename, 0);
+    }
 
-  if (timestamp === null) {
-    throw new Error("Timestamp not found");
-  }
+    if (timestamp === null) {
+        throw new Error("Timestamp not found");
+    }
 
-  console.log("Detected timestamp: " + timestamp);
+    console.log("Detected timestamp: " + timestamp);
 
-  return embedExifTime(timestamp, imageBuffer);
+    return embedExifTime(timestamp, imageBuffer);
 }
 
 /**
@@ -49,9 +45,6 @@ export function embedTimestampFromFilename(
  * @param exifTime - Date/time string in format "YYYY:MM:DD HH:MM:SS"
  * @returns New PNG buffer with embedded eXIf chunk
  */
-export function embedTimestampManual(
-  imageBuffer: Uint8Array,
-  exifTime: string,
-): Uint8Array {
-  return embedExifTime(exifTime, imageBuffer);
+export function embedTimestampManual(imageBuffer: Uint8Array, exifTime: string): Uint8Array {
+    return embedExifTime(exifTime, imageBuffer);
 }

@@ -2,19 +2,19 @@
 
 // File System Access API types
 interface FileSystemDirectoryHandle {
-  getFileHandle(name: string, options?: { create?: boolean }): Promise<FileSystemFileHandle>;
-  queryPermission(descriptor?: { mode?: string }): Promise<PermissionState>;
+    getFileHandle(name: string, options?: { create?: boolean }): Promise<FileSystemFileHandle>;
+    queryPermission(descriptor?: { mode?: string }): Promise<PermissionState>;
 }
 
 interface FileSystemFileHandle {
-  createWritable(): Promise<FileSystemWritableFileStream>;
+    createWritable(): Promise<FileSystemWritableFileStream>;
 }
 
 interface FileSystemWritableFileStream extends WritableStream {
-  write(data: BufferSource | Blob | string): Promise<void>;
-  close(): Promise<void>;
+    write(data: BufferSource | Blob | string): Promise<void>;
+    close(): Promise<void>;
 }
 
 interface Window {
-  showDirectoryPicker(options?: { mode?: string }): Promise<FileSystemDirectoryHandle>;
+    showDirectoryPicker(options?: { mode?: string }): Promise<FileSystemDirectoryHandle>;
 }

@@ -1,12 +1,12 @@
-import { describe, it, expect } from "vitest";
-import { readFileSync } from "fs";
-import { resolve } from "path";
-import { getCreationTimeFromChunk, embedExifTime, creationTimeToExifTime } from "./png";
+import { describe, expect, it } from "vitest";
+
+import { creationTimeToExifTime, embedExifTime, getCreationTimeFromChunk } from "./png";
+
+import { readFileSync } from "node:fs";
 
 // Helper to load test PNG file
 function loadTestPng(): Uint8Array {
-    const filePath = resolve(__dirname, "../../test/data/test3.png");
-    const buffer = readFileSync(filePath);
+    const buffer = readFileSync(new URL("../../data/PS5.png", import.meta.url));
     return new Uint8Array(buffer);
 }
 

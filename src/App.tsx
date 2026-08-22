@@ -1,13 +1,16 @@
-import { useState, useRef, useCallback } from "react";
-import TimezoneSelector, { getBrowserTimezoneOffset } from "./components/TimezoneSelector";
+import { useCallback, useRef, useState } from "react";
+
+import { IconAlertTriangle, IconArrowLeft, IconCheck, IconCircleCheck, IconFolder, IconFolderOpen, IconPhoto, IconRefresh, IconSettings } from "@tabler/icons-react";
+
 import DateTimeDialog from "./components/DateTimeDialog";
+import TimezoneSelector, { getBrowserTimezoneOffset } from "./components/TimezoneSelector";
 import { embedTimestampFromFilename, embedTimestampManual } from "./lib/timestamp";
 
 /** Stepper steps */
 const STEPS = [
-    { label: "設定", icon: "⚙️" },
-    { label: "ファイル選択", icon: "📁" },
-    { label: "処理", icon: "🔄" },
+    { label: "設定", icon: IconSettings },
+    { label: "ファイル選択", icon: IconFolder },
+    { label: "処理", icon: IconRefresh },
 ] as const;
 
 type StepIndex = 0 | 1 | 2;
@@ -40,26 +43,26 @@ function Stepper({ currentStep }: { currentStep: StepIndex }) {
             {STEPS.map((step, idx) => {
                 const isActive = idx === currentStep;
                 const isCompleted = idx < currentStep;
+                const StepIcon = step.icon;
                 return (
-                    <div key={idx} className="flex items-center flex-1 last:flex-none">
-                        {/* Step circle + label */}
+                    <div key={step.label} className="flex items-center flex-1 last:flex-none">
                         <div className="flex flex-col items-center gap-1.5">
                             <div
                                 className={`
-                  w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold
-                  transition-all duration-300 shrink-0
-                  ${isCompleted ? "bg-gradient-to-br from-brand-pink to-brand-violet text-white shadow-md" : isActive ? "bg-gradient-to-br from-brand-pink to-brand-violet text-white shadow-lg scale-110" : "bg-gray-100 text-gray-400 border border-gray-200"}
+                  flex size-9 shrink-0 items-center justify-center rounded-full border text-sm font-medium
+                  transition-colors duration-200
+                  ${isCompleted ? "border-primary bg-primary text-primary-foreground" : isActive ? "border-primary bg-background text-foreground ring-4 ring-ring/15" : "border-border bg-muted text-muted-foreground"}
                 `}
                             >
-                                {isCompleted ? "✓" : step.icon}
+                                {isCompleted ? <IconCheck size={17} stroke={2.25} aria-hidden="true" /> : <StepIcon size={17} stroke={1.9} aria-hidden="true" />}
                             </div>
-                            <span className={`text-xs font-medium transition-colors duration-300 ${isActive ? "text-gray-900" : isCompleted ? "text-brand-violet" : "text-gray-400"}`}>{step.label}</span>
+                            <span className={`text-xs font-medium transition-colors duration-200 ${isActive || isCompleted ? "text-foreground" : "text-muted-foreground"}`}>{step.label}</span>
                         </div>
 
                         {/* Connector line */}
                         {idx < STEPS.length - 1 && (
-                            <div className="flex-1 mx-3 mb-5">
-                                <div className={`h-0.5 rounded-full transition-all duration-500 ${isCompleted ? "bg-gradient-to-r from-brand-pink to-brand-violet" : "bg-gray-200"}`} />
+                            <div className="mb-5 mx-3 flex-1">
+                                <div className={`h-px transition-colors duration-300 ${isCompleted ? "bg-primary" : "bg-border"}`} />
                             </div>
                         )}
                     </div>
@@ -119,7 +122,8 @@ function App() {
 
     /* ─── Step 3: Process files ─── */
     const processFiles = async (files: FileList) => {
-        if (!directoryHandleRef.current || files.length === 0) return;
+        const directoryHandle = directoryHandleRef.current;
+        if (!directoryHandle || files.length === 0) return;
 
         setAppState("processing");
         setProgress(0);
@@ -130,7 +134,7 @@ function App() {
         const total = files.length;
 
         try {
-            await directoryHandleRef.current.queryPermission({ mode: "readwrite" });
+            await directoryHandle.queryPermission({ mode: "readwrite" });
         } catch {
             /* already granted */
         }
@@ -161,9 +165,9 @@ function App() {
                     resultBuffer = embedTimestampManual(buffer, manualTime);
                 }
 
-                const fileHandle = await directoryHandleRef.current!.getFileHandle(filename, { create: true });
+                const fileHandle = await directoryHandle.getFileHandle(filename, { create: true });
                 const writable = await fileHandle.createWritable();
-                await writable.write(resultBuffer);
+                await writable.write(new Uint8Array(resultBuffer));
                 await writable.close();
 
                 success++;
@@ -211,24 +215,32 @@ function App() {
     const currentStep = STATE_TO_STEP[appState];
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 bg-gray-50 font-sans">
+        <div className="min-h-screen bg-muted/35 px-4 py-8 font-sans text-foreground sm:px-6 sm:py-12">
             {/* Hidden file input */}
             <input ref={fileInputRef} type="file" id="fileElem" multiple accept="image/png" className="hidden" onChange={handleFileChange} />
 
-            {/* Card */}
-            <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl overflow-hidden animate-[fadeInUp_0.5s_ease_both]">
-                {/* Gradient top bar */}
-                <div className="h-1 bg-gradient-to-r from-brand-red via-brand-pink to-brand-violet" />
+            <main className="mx-auto w-full max-w-2xl animate-[fadeInUp_0.4s_ease_both] rounded-xl border border-border bg-card shadow-sm">
+                <div className="rounded-t-xl border-b border-border bg-muted/30 px-6 py-5 sm:px-8">
+                    <div className="flex items-center gap-3">
+                        <div className="flex size-9 items-center justify-center rounded-md border border-border bg-background shadow-xs">
+                            <IconPhoto size={19} stroke={1.8} aria-hidden="true" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold leading-none">PNG Timestamp Fixer</p>
+                            <p className="mt-1.5 text-xs text-muted-foreground">PNG metadata utility</p>
+                        </div>
+                    </div>
+                </div>
 
-                <div className="px-8 pt-8 pb-10 sm:px-10">
+                <div className="px-6 pb-9 pt-8 sm:px-10">
                     {/* Stepper */}
                     <Stepper currentStep={currentStep} />
 
                     {/* ──── Step 0: Settings ──── */}
                     {appState === "settings" && (
-                        <div className="text-center animate-[fadeIn_0.3s_ease]">
-                            <h1 className="text-3xl sm:text-4xl font-bold font-display tracking-tight bg-gradient-to-br from-brand-red via-brand-pink to-brand-violet bg-clip-text text-transparent mb-3">PNG Timestamp Fixer</h1>
-                            <p className="text-gray-500 leading-relaxed text-sm sm:text-base mb-8 max-w-md mx-auto">
+                        <div className="animate-[fadeIn_0.3s_ease] text-center">
+                            <h1 className="mb-3 font-display text-2xl font-semibold tracking-tight sm:text-3xl">スクリーンショットの日時を修正</h1>
+                            <p className="mx-auto mb-8 max-w-md text-sm leading-relaxed text-muted-foreground">
                                 ゲームコンソールなどで撮影したPNGスクリーンショットに EXIF形式のタイムスタンプを埋め込みます。
                                 <br />
                                 画質の劣化はありません。全ての処理はブラウザ上で完結します。
@@ -236,17 +248,15 @@ function App() {
 
                             <TimezoneSelector value={timezoneOffset} onChange={setTimezoneOffset} />
 
-                            <div className="mt-4">
-                                <p className="text-xs text-gray-400 mb-4">処理済みファイルの保存先ディレクトリを選択してください</p>
+                            <div className="mt-5">
+                                <p className="mb-4 text-xs text-muted-foreground">処理済みファイルの保存先ディレクトリを選択してください</p>
                                 <button
+                                    type="button"
                                     onClick={handleSetOutputDirectory}
-                                    className="inline-flex items-center gap-2 px-8 py-3 text-base font-semibold text-white rounded-xl
-                    bg-gradient-to-br from-brand-pink to-brand-violet
-                    shadow-md hover:shadow-lg hover:-translate-y-0.5
-                    active:translate-y-0 active:shadow-sm
-                    transition-all duration-150 cursor-pointer"
+                                    className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                 >
-                                    📂 保存先を選択して開始
+                                    <IconFolderOpen size={17} stroke={2} aria-hidden="true" />
+                                    保存先を選択して開始
                                 </button>
                             </div>
                         </div>
@@ -255,34 +265,37 @@ function App() {
                     {/* ──── Step 1: Select Files ──── */}
                     {appState === "select" && (
                         <div className="animate-[fadeIn_0.3s_ease]">
-                            <h2 className="text-2xl font-bold font-display tracking-tight text-gray-900 text-center mb-1">ファイルを選択</h2>
-                            <p className="text-gray-500 text-sm text-center mb-6">タイムスタンプを修正するPNGファイルを選択してください</p>
+                            <h2 className="mb-1 text-center font-display text-2xl font-semibold tracking-tight">ファイルを選択</h2>
+                            <p className="mb-6 text-center text-sm text-muted-foreground">タイムスタンプを修正するPNGファイルを選択してください</p>
 
                             {/* Dropzone */}
-                            <div
+                            <button
+                                type="button"
                                 onClick={handleFileSelect}
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
                                 onDrop={handleDrop}
                                 className={`
-                  flex flex-col items-center justify-center gap-3 p-10
-                  border-2 border-dashed rounded-2xl cursor-pointer
-                  transition-all duration-200
-                  ${dragOver ? "border-brand-violet bg-brand-violet/5 scale-[1.01]" : "border-gray-200 bg-gray-50 hover:border-brand-pink hover:bg-brand-pink/[0.03]"}
+                  flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border border-dashed p-10
+                  transition-colors duration-200 focus-within:ring-2 focus-within:ring-ring
+                  ${dragOver ? "border-foreground bg-accent" : "border-border bg-muted/35 hover:border-muted-foreground/50 hover:bg-accent/60"}
                 `}
                             >
-                                <span className="text-4xl">📁</span>
-                                <p className="text-sm text-gray-500 text-center">
+                                <span className="flex size-11 items-center justify-center rounded-md border border-border bg-background shadow-xs">
+                                    <IconFolderOpen size={22} stroke={1.7} aria-hidden="true" />
+                                </span>
+                                <span className="text-center text-sm text-muted-foreground">
                                     クリックしてファイルを選択するか、
                                     <br />
-                                    <span className="font-semibold text-brand-violet">ここにドラッグ＆ドロップ</span>
-                                </p>
-                            </div>
+                                    <span className="font-medium text-foreground">ここにドラッグ＆ドロップ</span>
+                                </span>
+                            </button>
 
                             {/* Back button */}
                             <div className="flex justify-center mt-6">
-                                <button onClick={handleBackToSettings} className="text-sm text-gray-400 hover:text-gray-600 transition-colors cursor-pointer">
-                                    ← 設定に戻る
+                                <button type="button" onClick={handleBackToSettings} className="inline-flex cursor-pointer items-center gap-1.5 rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                                    <IconArrowLeft size={16} stroke={2} aria-hidden="true" />
+                                    設定に戻る
                                 </button>
                             </div>
                         </div>
@@ -291,64 +304,67 @@ function App() {
                     {/* ──── Step 2: Processing ──── */}
                     {appState === "processing" && (
                         <div className="animate-[fadeIn_0.3s_ease] text-center">
-                            <h2 className="text-2xl font-bold font-display tracking-tight text-gray-900 mb-2">処理中...</h2>
-                            <p className="text-gray-500 text-sm mb-6">タイムスタンプを修正してディレクトリに保存しています...</p>
+                            <div className="mx-auto mb-4 flex size-11 items-center justify-center rounded-full border border-border bg-muted">
+                                <IconRefresh className="animate-spin" size={21} stroke={1.8} aria-hidden="true" />
+                            </div>
+                            <h2 className="mb-2 font-display text-2xl font-semibold tracking-tight">処理中...</h2>
+                            <p className="mb-6 text-sm text-muted-foreground">タイムスタンプを修正してディレクトリに保存しています...</p>
 
                             {/* Progress bar */}
-                            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-2">
-                                <div className="h-full bg-gradient-to-r from-brand-pink to-brand-violet rounded-full transition-[width] duration-300" style={{ width: `${progress}%` }} />
+                            <div className="mb-2 h-2 w-full overflow-hidden rounded-full bg-secondary">
+                                <div className="h-full rounded-full bg-primary transition-[width] duration-300" style={{ width: `${progress}%` }} />
                             </div>
-                            <p className="text-xs text-gray-400">{Math.round(progress)}%</p>
+                            <p className="text-xs tabular-nums text-muted-foreground">{Math.round(progress)}%</p>
                         </div>
                     )}
 
                     {/* ──── Done ──── */}
                     {appState === "done" && (
                         <div className="animate-[fadeIn_0.3s_ease] text-center">
-                            <div className="text-5xl mb-3">{result.failed === 0 ? "✅" : "⚠️"}</div>
-                            <h2 className="text-2xl font-bold font-display tracking-tight text-gray-900 mb-1">{result.failed === 0 ? "完了しました！" : "処理が完了しました"}</h2>
-                            <p className="text-gray-500 text-sm mb-6">{result.failed === 0 ? "全てのファイルが正常に処理されました。" : `${result.failed} 件のファイルの処理に失敗しました。`}</p>
+                            <div className={`mx-auto mb-4 flex size-12 items-center justify-center rounded-full border ${result.failed === 0 ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-amber-200 bg-amber-50 text-amber-700"}`}>
+                                {result.failed === 0 ? <IconCircleCheck size={25} stroke={1.8} aria-hidden="true" /> : <IconAlertTriangle size={25} stroke={1.8} aria-hidden="true" />}
+                            </div>
+                            <h2 className="mb-1 font-display text-2xl font-semibold tracking-tight">{result.failed === 0 ? "完了しました" : "処理が完了しました"}</h2>
+                            <p className="mb-6 text-sm text-muted-foreground">{result.failed === 0 ? "全てのファイルが正常に処理されました。" : `${result.failed} 件のファイルの処理に失敗しました。`}</p>
 
                             {/* Result summary */}
-                            <div className="flex justify-center gap-4 mb-8">
-                                <div className="flex flex-col items-center gap-1 px-5 py-3 bg-gray-50 rounded-xl">
-                                    <span className="text-2xl font-bold text-gray-900">{result.success}</span>
-                                    <span className="text-[0.65rem] font-medium text-gray-400 uppercase tracking-wider">成功</span>
+                            <div className="mb-8 flex justify-center gap-3">
+                                <div className="flex min-w-24 flex-col items-center gap-1 rounded-lg border border-border bg-muted/30 px-5 py-3">
+                                    <span className="text-2xl font-semibold tabular-nums">{result.success}</span>
+                                    <span className="text-[0.65rem] font-medium uppercase tracking-wider text-muted-foreground">成功</span>
                                 </div>
                                 {result.skipped > 0 && (
-                                    <div className="flex flex-col items-center gap-1 px-5 py-3 bg-gray-50 rounded-xl">
-                                        <span className="text-2xl font-bold text-gray-900">{result.skipped}</span>
-                                        <span className="text-[0.65rem] font-medium text-gray-400 uppercase tracking-wider">スキップ</span>
+                                    <div className="flex min-w-24 flex-col items-center gap-1 rounded-lg border border-border bg-muted/30 px-5 py-3">
+                                        <span className="text-2xl font-semibold tabular-nums">{result.skipped}</span>
+                                        <span className="text-[0.65rem] font-medium uppercase tracking-wider text-muted-foreground">スキップ</span>
                                     </div>
                                 )}
                                 {result.failed > 0 && (
-                                    <div className="flex flex-col items-center gap-1 px-5 py-3 bg-gray-50 rounded-xl">
-                                        <span className="text-2xl font-bold text-brand-hot-red">{result.failed}</span>
-                                        <span className="text-[0.65rem] font-medium text-gray-400 uppercase tracking-wider">失敗</span>
+                                    <div className="flex min-w-24 flex-col items-center gap-1 rounded-lg border border-destructive/20 bg-destructive/5 px-5 py-3">
+                                        <span className="text-2xl font-semibold tabular-nums text-destructive">{result.failed}</span>
+                                        <span className="text-[0.65rem] font-medium uppercase tracking-wider text-muted-foreground">失敗</span>
                                     </div>
                                 )}
                             </div>
 
                             <button
+                                type="button"
                                 onClick={handleReset}
-                                className="inline-flex items-center gap-2 px-7 py-3 text-sm font-semibold text-white rounded-xl
-                  bg-gradient-to-br from-brand-pink to-brand-violet
-                  shadow-md hover:shadow-lg hover:-translate-y-0.5
-                  active:translate-y-0 active:shadow-sm
-                  transition-all duration-150 cursor-pointer"
+                                className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                             >
-                                🔄 続けて処理する
+                                <IconRefresh size={17} stroke={2} aria-hidden="true" />
+                                続けて処理する
                             </button>
                         </div>
                     )}
                 </div>
-            </div>
+            </main>
 
             {/* Manual DateTime Dialog */}
             {pendingFile && <DateTimeDialog filename={pendingFile.file.name} imageUrl={pendingFile.objectUrl} onConfirm={handleDialogConfirm} onSkip={handleDialogSkip} />}
 
             {/* Footer */}
-            <p className="fixed bottom-0 left-0 right-0 text-center py-3 text-xs text-gray-400">©2025-2026 nexryai All rights reserved.</p>
+            <p className="mt-6 text-center text-xs text-muted-foreground">©2025-2026 nexryai All rights reserved.</p>
         </div>
     );
 }

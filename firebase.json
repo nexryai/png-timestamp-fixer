@@ -1,6 +1,6 @@
 {
     "hosting": {
-        "public": "dist/google-photos-uploader/browser",
+        "public": "dist",
         "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
         "frameworksBackend": {
             "region": "europe-west1"

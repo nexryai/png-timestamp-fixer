@@ -39,13 +39,17 @@ interface PendingFile {
 /* ─── Stepper Component ─── */
 function Stepper({ currentStep }: { currentStep: StepIndex }) {
     return (
-        <div className="flex items-center justify-center gap-0 w-full max-w-lg mx-auto mb-10">
+        <div className="relative mx-auto mb-10 grid w-full max-w-lg grid-cols-3">
+            <div aria-hidden="true" className="absolute left-1/6 right-1/6 top-[18px] h-px bg-border">
+                <div className="h-full bg-primary transition-[width] duration-300" style={{ width: `${currentStep * 50}%` }} />
+            </div>
+
             {STEPS.map((step, idx) => {
                 const isActive = idx === currentStep;
                 const isCompleted = idx < currentStep;
                 const StepIcon = step.icon;
                 return (
-                    <div key={step.label} className="flex items-center flex-1 last:flex-none">
+                    <div key={step.label} className="relative z-10 flex justify-center">
                         <div className="flex flex-col items-center gap-1.5">
                             <div
                                 className={`
@@ -58,13 +62,6 @@ function Stepper({ currentStep }: { currentStep: StepIndex }) {
                             </div>
                             <span className={`text-xs font-medium transition-colors duration-200 ${isActive || isCompleted ? "text-foreground" : "text-muted-foreground"}`}>{step.label}</span>
                         </div>
-
-                        {/* Connector line */}
-                        {idx < STEPS.length - 1 && (
-                            <div className="mb-5 mx-3 flex-1">
-                                <div className={`h-px transition-colors duration-300 ${isCompleted ? "bg-primary" : "bg-border"}`} />
-                            </div>
-                        )}
                     </div>
                 );
             })}

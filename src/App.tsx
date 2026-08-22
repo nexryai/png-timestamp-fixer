@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 
-import { IconAlertTriangle, IconArrowLeft, IconCheck, IconCircleCheck, IconFolder, IconFolderOpen, IconPhoto, IconRefresh, IconSettings } from "@tabler/icons-react";
+import { IconAlertTriangle, IconArrowLeft, IconCheck, IconCircleCheck, IconFileTime, IconFolder, IconFolderOpen, IconPhoto, IconRefresh, IconSettings } from "@tabler/icons-react";
 
 import DateTimeDialog from "./components/DateTimeDialog";
 import TimezoneSelector, { getBrowserTimezoneOffset } from "./components/TimezoneSelector";
@@ -76,6 +76,7 @@ function Stepper({ currentStep }: { currentStep: StepIndex }) {
 function App() {
     const [appState, setAppState] = useState<AppState>("settings");
     const [timezoneOffset, setTimezoneOffset] = useState(() => getBrowserTimezoneOffset());
+    const [ignoreFilenameTimezone, setIgnoreFilenameTimezone] = useState(true);
     const [progress, setProgress] = useState(0);
     const [result, setResult] = useState<ProcessingResult>({ total: 0, success: 0, failed: 0, skipped: 0 });
     const [dragOver, setDragOver] = useState(false);
@@ -154,7 +155,7 @@ function App() {
                 let resultBuffer: Uint8Array;
 
                 try {
-                    resultBuffer = embedTimestampFromFilename(buffer, filename, timezoneOffset);
+                    resultBuffer = embedTimestampFromFilename(buffer, filename, timezoneOffset, ignoreFilenameTimezone);
                 } catch {
                     const manualTime = await requestManualDateTime(file, buffer);
                     if (manualTime === null) {
@@ -246,7 +247,23 @@ function App() {
                                 画質の劣化はありません。全ての処理はブラウザ上で完結します。
                             </p>
 
-                            <TimezoneSelector value={timezoneOffset} onChange={setTimezoneOffset} />
+                            <div className="mx-auto flex max-w-sm flex-col gap-3 text-left">
+                                <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3 transition-colors hover:bg-accent/60">
+                                    <input type="checkbox" checked={ignoreFilenameTimezone} onChange={(event) => setIgnoreFilenameTimezone(event.target.checked)} className="peer sr-only" />
+                                    <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input bg-background text-primary-foreground shadow-xs transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2 peer-checked:border-primary peer-checked:bg-primary">
+                                        <IconCheck className={`transition-opacity ${ignoreFilenameTimezone ? "opacity-100" : "opacity-0"}`} size={12} stroke={3} aria-hidden="true" />
+                                    </span>
+                                    <span className="flex min-w-0 gap-2.5">
+                                        <IconFileTime className="mt-0.5 shrink-0 text-muted-foreground" size={17} stroke={1.9} aria-hidden="true" />
+                                        <span>
+                                            <span className="block text-sm font-medium text-foreground">ファイル名の日時はタイムゾーンを無視</span>
+                                            <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">ファイル名から推測した日時を補正せず、そのまま使用します。</span>
+                                        </span>
+                                    </span>
+                                </label>
+
+                                <TimezoneSelector value={timezoneOffset} onChange={setTimezoneOffset} />
+                            </div>
 
                             <div className="mt-5">
                                 <p className="mb-4 text-xs text-muted-foreground">処理済みファイルの保存先ディレクトリを選択してください</p>

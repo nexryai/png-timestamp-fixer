@@ -67,7 +67,7 @@ export default function TimezoneSelector({ value, onChange }: TimezoneSelectorPr
     };
 
     return (
-        <div className="mx-auto flex max-w-sm items-center justify-center gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3">
+        <div className="flex max-w-sm items-center justify-center gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3">
             <label htmlFor="timezone-select" className="flex items-center gap-2 whitespace-nowrap text-sm font-medium text-foreground">
                 <IconClock size={17} stroke={1.9} aria-hidden="true" />
                 タイムゾーン

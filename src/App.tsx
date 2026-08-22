@@ -3,15 +3,18 @@ import { useCallback, useRef, useState } from "react";
 import { IconAlertTriangle, IconArrowLeft, IconCheck, IconCircleCheck, IconFileTime, IconFolder, IconFolderOpen, IconPhoto, IconRefresh, IconSettings } from "@tabler/icons-react";
 
 import DateTimeDialog from "./components/DateTimeDialog";
+import LanguageSelector from "./components/LanguageSelector";
 import TimezoneSelector, { getBrowserTimezoneOffset } from "./components/TimezoneSelector";
+import { useI18n } from "./i18n";
 import { embedTimestampFromFilename, embedTimestampManual } from "./lib/timestamp";
+import type { TranslationKey } from "./translations";
 
 /** Stepper steps */
 const STEPS = [
-    { label: "設定", icon: IconSettings },
-    { label: "ファイル選択", icon: IconFolder },
-    { label: "処理", icon: IconRefresh },
-] as const;
+    { labelKey: "stepSettings", icon: IconSettings },
+    { labelKey: "stepFiles", icon: IconFolder },
+    { labelKey: "stepProcess", icon: IconRefresh },
+] as const satisfies readonly { labelKey: TranslationKey; icon: typeof IconSettings }[];
 
 type StepIndex = 0 | 1 | 2;
 type AppState = "settings" | "select" | "processing" | "done";
@@ -38,6 +41,8 @@ interface PendingFile {
 
 /* ─── Stepper Component ─── */
 function Stepper({ currentStep }: { currentStep: StepIndex }) {
+    const { t } = useI18n();
+
     return (
         <div className="relative mx-auto mb-10 grid w-full max-w-lg grid-cols-3">
             <div aria-hidden="true" className="absolute left-1/6 right-1/6 top-[18px] h-px bg-border">
@@ -49,7 +54,7 @@ function Stepper({ currentStep }: { currentStep: StepIndex }) {
                 const isCompleted = idx < currentStep;
                 const StepIcon = step.icon;
                 return (
-                    <div key={step.label} className="relative z-10 flex justify-center">
+                    <div key={step.labelKey} className="relative z-10 flex justify-center">
                         <div className="flex flex-col items-center gap-1.5">
                             <div
                                 className={`
@@ -60,7 +65,7 @@ function Stepper({ currentStep }: { currentStep: StepIndex }) {
                             >
                                 {isCompleted ? <IconCheck size={17} stroke={2.25} aria-hidden="true" /> : <StepIcon size={17} stroke={1.9} aria-hidden="true" />}
                             </div>
-                            <span className={`text-xs font-medium transition-colors duration-200 ${isActive || isCompleted ? "text-foreground" : "text-muted-foreground"}`}>{step.label}</span>
+                            <span className={`text-xs font-medium transition-colors duration-200 ${isActive || isCompleted ? "text-foreground" : "text-muted-foreground"}`}>{t(step.labelKey)}</span>
                         </div>
                     </div>
                 );
@@ -71,6 +76,7 @@ function Stepper({ currentStep }: { currentStep: StepIndex }) {
 
 /* ─── Main App ─── */
 function App() {
+    const { t } = useI18n();
     const [appState, setAppState] = useState<AppState>("settings");
     const [timezoneOffset, setTimezoneOffset] = useState(() => getBrowserTimezoneOffset());
     const [ignoreFilenameTimezone, setIgnoreFilenameTimezone] = useState(true);
@@ -215,18 +221,21 @@ function App() {
     return (
         <div className="min-h-screen bg-muted/35 px-4 py-8 font-sans text-foreground sm:px-6 sm:py-12">
             {/* Hidden file input */}
-            <input ref={fileInputRef} type="file" id="fileElem" multiple accept="image/png" className="hidden" onChange={handleFileChange} />
+            <input ref={fileInputRef} type="file" id="fileElem" multiple accept="image/png" aria-label={t("filesDescription")} className="hidden" onChange={handleFileChange} />
 
             <main className="mx-auto w-full max-w-2xl animate-[fadeInUp_0.4s_ease_both] rounded-xl border border-border bg-card shadow-sm">
                 <div className="rounded-t-xl border-b border-border bg-muted/30 px-6 py-5 sm:px-8">
-                    <div className="flex items-center gap-3">
-                        <div className="flex size-9 items-center justify-center rounded-md border border-border bg-background shadow-xs">
-                            <IconPhoto size={19} stroke={1.8} aria-hidden="true" />
+                    <div className="flex items-center justify-between gap-4">
+                        <div className="flex min-w-0 items-center gap-3">
+                            <div className="flex size-9 shrink-0 items-center justify-center rounded-md border border-border bg-background shadow-xs">
+                                <IconPhoto size={19} stroke={1.8} aria-hidden="true" />
+                            </div>
+                            <div className="min-w-0">
+                                <p className="truncate text-sm font-semibold leading-none">PNG Timestamp Fixer</p>
+                                <p className="mt-1.5 truncate text-xs text-muted-foreground">{t("headerSubtitle")}</p>
+                            </div>
                         </div>
-                        <div>
-                            <p className="text-sm font-semibold leading-none">PNG Timestamp Fixer</p>
-                            <p className="mt-1.5 text-xs text-muted-foreground">PNG metadata utility</p>
-                        </div>
+                        <LanguageSelector />
                     </div>
                 </div>
 
@@ -237,12 +246,11 @@ function App() {
                     {/* ──── Step 0: Settings ──── */}
                     {appState === "settings" && (
                         <div className="animate-[fadeIn_0.3s_ease] text-center">
-                            <h1 className="mb-3 font-display text-2xl font-semibold tracking-tight sm:text-3xl">PNGファイルのタイムスタンプを修正</h1>
+                            <h1 className="mb-3 font-display text-2xl font-semibold tracking-tight sm:text-3xl">{t("settingsTitle")}</h1>
                             <p className="mx-auto mb-8 max-w-md text-sm leading-relaxed text-muted-foreground">
-                                VRChatやゲームコンソールなどで撮影したPNG画像に EXIF形式のタイムスタンプをメタデータとして埋め込みます。
-                                これにより、Google Photosやその他画像管理ソフトウェアでファイルシステム上のタイムスタンプに依存せずに、正しい撮影日時を扱えるようになります。
+                                {t("settingsDescription")}
                                 <br />
-                                画質の劣化はありません。全ての処理はブラウザ上で完結します。
+                                {t("settingsPrivacy")}
                             </p>
 
                             <div className="mx-auto flex max-w-sm flex-col gap-3 text-left">
@@ -254,8 +262,8 @@ function App() {
                                     <span className="flex min-w-0 gap-2.5">
                                         <IconFileTime className="mt-0.5 shrink-0 text-muted-foreground" size={17} stroke={1.9} aria-hidden="true" />
                                         <span>
-                                            <span className="block text-sm font-medium text-foreground">ファイル名の日時はタイムゾーンを無視</span>
-                                            <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">ファイル名から推測した日時を補正せず、そのまま使用します。</span>
+                                            <span className="block text-sm font-medium text-foreground">{t("ignoreTimezoneTitle")}</span>
+                                            <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">{t("ignoreTimezoneDescription")}</span>
                                         </span>
                                     </span>
                                 </label>
@@ -264,14 +272,18 @@ function App() {
                             </div>
 
                             <div className="mt-5">
-                                <p className="mb-4 text-xs text-muted-foreground">処理済みファイルの保存先ディレクトリを選択してください。<br />現在、Chromium系のブラウザのみがサポートされています。</p>
+                                <p className="mb-4 text-xs text-muted-foreground">
+                                    {t("outputDirectoryHint")}
+                                    <br />
+                                    {t("chromiumOnly")}
+                                </p>
                                 <button
                                     type="button"
                                     onClick={handleSetOutputDirectory}
                                     className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                 >
                                     <IconFolderOpen size={17} stroke={2} aria-hidden="true" />
-                                    保存先を選択して開始
+                                    {t("chooseOutput")}
                                 </button>
                             </div>
                         </div>
@@ -280,8 +292,8 @@ function App() {
                     {/* ──── Step 1: Select Files ──── */}
                     {appState === "select" && (
                         <div className="animate-[fadeIn_0.3s_ease]">
-                            <h2 className="mb-1 text-center font-display text-2xl font-semibold tracking-tight">ファイルを選択</h2>
-                            <p className="mb-6 text-center text-sm text-muted-foreground">タイムスタンプを修正するPNGファイルを選択してください</p>
+                            <h2 className="mb-1 text-center font-display text-2xl font-semibold tracking-tight">{t("filesTitle")}</h2>
+                            <p className="mb-6 text-center text-sm text-muted-foreground">{t("filesDescription")}</p>
 
                             {/* Dropzone */}
                             <button
@@ -300,9 +312,9 @@ function App() {
                                     <IconFolderOpen size={22} stroke={1.7} aria-hidden="true" />
                                 </span>
                                 <span className="text-center text-sm text-muted-foreground">
-                                    クリックしてファイルを選択するか、
+                                    {t("dropChoose")}
                                     <br />
-                                    <span className="font-medium text-foreground">ここにドラッグ＆ドロップ</span>
+                                    <span className="font-medium text-foreground">{t("dropHere")}</span>
                                 </span>
                             </button>
 
@@ -310,7 +322,7 @@ function App() {
                             <div className="flex justify-center mt-6">
                                 <button type="button" onClick={handleBackToSettings} className="inline-flex cursor-pointer items-center gap-1.5 rounded-sm text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                                     <IconArrowLeft size={16} stroke={2} aria-hidden="true" />
-                                    設定に戻る
+                                    {t("backToSettings")}
                                 </button>
                             </div>
                         </div>
@@ -322,8 +334,8 @@ function App() {
                             <div className="mx-auto mb-4 flex size-11 items-center justify-center rounded-full border border-border bg-muted">
                                 <IconRefresh className="animate-spin" size={21} stroke={1.8} aria-hidden="true" />
                             </div>
-                            <h2 className="mb-2 font-display text-2xl font-semibold tracking-tight">処理中...</h2>
-                            <p className="mb-6 text-sm text-muted-foreground">タイムスタンプを修正してディレクトリに保存しています...</p>
+                            <h2 className="mb-2 font-display text-2xl font-semibold tracking-tight">{t("processingTitle")}</h2>
+                            <p className="mb-6 text-sm text-muted-foreground">{t("processingDescription")}</p>
 
                             {/* Progress bar */}
                             <div className="mb-2 h-2 w-full overflow-hidden rounded-full bg-secondary">
@@ -339,25 +351,25 @@ function App() {
                             <div className={`mx-auto mb-4 flex size-12 items-center justify-center rounded-full border ${result.failed === 0 ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-amber-200 bg-amber-50 text-amber-700"}`}>
                                 {result.failed === 0 ? <IconCircleCheck size={25} stroke={1.8} aria-hidden="true" /> : <IconAlertTriangle size={25} stroke={1.8} aria-hidden="true" />}
                             </div>
-                            <h2 className="mb-1 font-display text-2xl font-semibold tracking-tight">{result.failed === 0 ? "完了しました" : "処理が完了しました"}</h2>
-                            <p className="mb-6 text-sm text-muted-foreground">{result.failed === 0 ? "全てのファイルが正常に処理されました。" : `${result.failed} 件のファイルの処理に失敗しました。`}</p>
+                            <h2 className="mb-1 font-display text-2xl font-semibold tracking-tight">{result.failed === 0 ? t("completeTitle") : t("finishedTitle")}</h2>
+                            <p className="mb-6 text-sm text-muted-foreground">{result.failed === 0 ? t("completeDescription") : t("failedDescription", { count: result.failed })}</p>
 
                             {/* Result summary */}
                             <div className="mb-8 flex justify-center gap-3">
                                 <div className="flex min-w-24 flex-col items-center gap-1 rounded-lg border border-border bg-muted/30 px-5 py-3">
                                     <span className="text-2xl font-semibold tabular-nums">{result.success}</span>
-                                    <span className="text-[0.65rem] font-medium uppercase tracking-wider text-muted-foreground">成功</span>
+                                    <span className="text-[0.65rem] font-medium uppercase tracking-wider text-muted-foreground">{t("resultSuccess")}</span>
                                 </div>
                                 {result.skipped > 0 && (
                                     <div className="flex min-w-24 flex-col items-center gap-1 rounded-lg border border-border bg-muted/30 px-5 py-3">
                                         <span className="text-2xl font-semibold tabular-nums">{result.skipped}</span>
-                                        <span className="text-[0.65rem] font-medium uppercase tracking-wider text-muted-foreground">スキップ</span>
+                                        <span className="text-[0.65rem] font-medium uppercase tracking-wider text-muted-foreground">{t("resultSkipped")}</span>
                                     </div>
                                 )}
                                 {result.failed > 0 && (
                                     <div className="flex min-w-24 flex-col items-center gap-1 rounded-lg border border-destructive/20 bg-destructive/5 px-5 py-3">
                                         <span className="text-2xl font-semibold tabular-nums text-destructive">{result.failed}</span>
-                                        <span className="text-[0.65rem] font-medium uppercase tracking-wider text-muted-foreground">失敗</span>
+                                        <span className="text-[0.65rem] font-medium uppercase tracking-wider text-muted-foreground">{t("resultFailed")}</span>
                                     </div>
                                 )}
                             </div>
@@ -368,7 +380,7 @@ function App() {
                                 className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                             >
                                 <IconRefresh size={17} stroke={2} aria-hidden="true" />
-                                続けて処理する
+                                {t("processMore")}
                             </button>
                         </div>
                     )}

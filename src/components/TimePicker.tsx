@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 
 import { IconCheck, IconChevronDown, IconClock } from "@tabler/icons-react";
 
+import { useI18n } from "../i18n";
+
 interface TimePickerProps {
     value: string;
     onChange: (value: string) => void;
@@ -13,12 +15,12 @@ function parseTime(value: string): [number, number, number] {
 }
 
 const ranges = [Array.from({ length: 24 }, (_, value) => value), Array.from({ length: 60 }, (_, value) => value), Array.from({ length: 60 }, (_, value) => value)] as const;
-const labels = ["時", "分", "秒"] as const;
-
 export default function TimePicker({ value, onChange }: TimePickerProps) {
+    const { t } = useI18n();
     const [isOpen, setIsOpen] = useState(false);
     const rootRef = useRef<HTMLDivElement>(null);
     const selected = parseTime(value);
+    const labels = [t("hour"), t("minute"), t("second")];
 
     useEffect(() => {
         if (!isOpen) return;
@@ -53,12 +55,12 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
                 className="flex h-10 w-full cursor-pointer items-center gap-2 rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none transition-[border-color,box-shadow] hover:bg-accent/50 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
             >
                 <IconClock className="text-muted-foreground" size={16} stroke={1.9} aria-hidden="true" />
-                <span className="flex-1 text-left tabular-nums">{value || "時刻を選択"}</span>
+                <span className="flex-1 text-left tabular-nums">{value || t("chooseTime")}</span>
                 <IconChevronDown className={`text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} size={15} stroke={2} aria-hidden="true" />
             </button>
 
             {isOpen && (
-                <div role="dialog" aria-label="時刻を選択" className="absolute left-0 top-[calc(100%+0.4rem)] z-[60] w-full min-w-64 rounded-md border border-border/80 bg-background/85 p-3 shadow-lg shadow-black/10 backdrop-blur-xl animate-[fadeIn_0.12s_ease-out]">
+                <div role="dialog" aria-label={t("chooseTime")} className="absolute left-0 top-[calc(100%+0.4rem)] z-[60] w-full min-w-64 rounded-md border border-border/80 bg-background/85 p-3 shadow-lg shadow-black/10 backdrop-blur-xl animate-[fadeIn_0.12s_ease-out]">
                     <div className="grid grid-cols-3 gap-2">
                         {ranges.map((values, partIndex) => (
                             <div key={labels[partIndex]}>
@@ -84,7 +86,7 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
                         onClick={() => setIsOpen(false)}
                         className="mt-3 flex h-8 w-full cursor-pointer items-center justify-center rounded-sm bg-primary px-3 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                        完了
+                        {t("done")}
                     </button>
                 </div>
             )}

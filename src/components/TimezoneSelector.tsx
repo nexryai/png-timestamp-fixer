@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { IconCheck, IconChevronDown, IconClock } from "@tabler/icons-react";
 
+import { useI18n } from "../i18n";
+
 interface TimezoneSelectorProps {
     value: number;
     onChange: (offset: number) => void;
@@ -22,6 +24,7 @@ export function getBrowserTimezoneOffset(): number {
 }
 
 export default function TimezoneSelector({ value, onChange }: TimezoneSelectorProps) {
+    const { t } = useI18n();
     const options = useMemo(() => getTimezoneOptions(), []);
     const [isOpen, setIsOpen] = useState(false);
     const rootRef = useRef<HTMLDivElement>(null);
@@ -70,7 +73,7 @@ export default function TimezoneSelector({ value, onChange }: TimezoneSelectorPr
         <div className="flex max-w-sm items-center justify-center gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3">
             <label htmlFor="timezone-select" className="flex items-center gap-2 whitespace-nowrap text-sm font-medium text-foreground">
                 <IconClock size={17} stroke={1.9} aria-hidden="true" />
-                タイムゾーン
+                {t("timezone")}
             </label>
             <div ref={rootRef} className="relative flex-1">
                 <button
@@ -92,7 +95,7 @@ export default function TimezoneSelector({ value, onChange }: TimezoneSelectorPr
                 </button>
 
                 {isOpen && (
-                    <div role="listbox" aria-label="タイムゾーン" onKeyDown={handleMenuKeyDown} className="absolute left-0 right-0 top-[calc(100%+0.4rem)] z-50 max-h-56 overflow-y-auto rounded-md border border-border/80 bg-background/85 p-1 shadow-lg shadow-black/10 backdrop-blur-xl animate-[fadeIn_0.12s_ease-out]">
+                    <div role="listbox" aria-label={t("timezone")} onKeyDown={handleMenuKeyDown} className="absolute left-0 right-0 top-[calc(100%+0.4rem)] z-50 max-h-56 overflow-y-auto rounded-md border border-border/80 bg-background/85 p-1 shadow-lg shadow-black/10 backdrop-blur-xl animate-[fadeIn_0.12s_ease-out]">
                         {options.map((opt) => (
                             <button
                                 key={opt.offset}

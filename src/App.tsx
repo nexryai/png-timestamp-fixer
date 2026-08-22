@@ -55,7 +55,7 @@ function Stepper({ currentStep }: { currentStep: StepIndex }) {
                                 className={`
                   flex size-9 shrink-0 items-center justify-center rounded-full border text-sm font-medium
                   transition-colors duration-200
-                  ${isCompleted ? "border-primary bg-primary text-primary-foreground" : isActive ? "border-primary bg-background text-foreground ring-4 ring-ring/15" : "border-border bg-muted text-muted-foreground"}
+                  ${isCompleted ? "border-primary bg-primary text-primary-foreground" : isActive ? "border-primary/20 bg-background text-foreground ring-4 ring-ring/15" : "border-border bg-muted text-muted-foreground"}
                 `}
                             >
                                 {isCompleted ? <IconCheck size={17} stroke={2.25} aria-hidden="true" /> : <StepIcon size={17} stroke={1.9} aria-hidden="true" />}

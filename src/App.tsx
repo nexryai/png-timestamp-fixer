@@ -290,7 +290,7 @@ function App() {
                                 onDragLeave={handleDragLeave}
                                 onDrop={handleDrop}
                                 className={`
-                  flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border border-dashed p-10
+                  mx-auto flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border border-dashed p-10
                   transition-colors duration-200 focus-within:ring-2 focus-within:ring-ring
                   ${dragOver ? "border-foreground bg-accent" : "border-border bg-muted/35 hover:border-muted-foreground/50 hover:bg-accent/60"}
                 `}

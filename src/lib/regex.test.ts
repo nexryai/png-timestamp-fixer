@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+
 import { extractTimestampString } from "./regex";
 
 describe("extractTimestampString", () => {
@@ -9,6 +10,10 @@ describe("extractTimestampString", () => {
 
         it("should parse YYYY-MM-DD_HH:MM:SS format", () => {
             expect(extractTimestampString("2025-01-22_20:26:51", 0)).toBe("2025:01:22 20:26:51");
+        });
+
+        it("should parse a VRChat filename with hyphen-separated time and milliseconds", () => {
+            expect(extractTimestampString("VRChat_2026-08-02_01-14-45.265_7680x4320.png", 0)).toBe("2026:08:02 01:14:45");
         });
 
         it("should parse YYYYMMDDHHMMSS format", () => {

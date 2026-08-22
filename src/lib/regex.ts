@@ -17,7 +17,7 @@ function pad4(n: number): string {
  * Extracts a timestamp string from the input using regex patterns.
  *
  * Tries 3 patterns in order:
- *   1. "YYYY-MM-DD HH:MM:SS" or "YYYY-MM-DD_HH:MM:SS"
+ *   1. "YYYY-MM-DD HH:MM:SS", "YYYY-MM-DD_HH:MM:SS", or "YYYY-MM-DD_HH-MM-SS.mmm"
  *   2. "YYYYMMDDHHmmss" (14 consecutive digits)
  *   3. Unix timestamp (10 consecutive digits)
  *
@@ -26,11 +26,11 @@ function pad4(n: number): string {
  * @returns Formatted string "YYYY:MM:DD HH:MM:SS" or null
  */
 export function extractTimestampString(input: string, unixTimeOffset: number): string | null {
-    // Pattern 1: YYYY-MM-DD[_ ]HH:MM:SS
-    const pattern1 = /(\d{4})-(\d{2})-(\d{2})[_ ](\d{2}):(\d{2}):(\d{2})/;
+    // Pattern 1: YYYY-MM-DD[_ ]HH:MM:SS or YYYY-MM-DD[_ ]HH-MM-SS (optional milliseconds)
+    const pattern1 = /(\d{4})-(\d{2})-(\d{2})[_ ](\d{2})([:-])(\d{2})\5(\d{2})(?:\.\d+)?/;
     const match1 = input.match(pattern1);
     if (match1) {
-        const [, year, month, day, hour, minute, second] = match1;
+        const [, year, month, day, hour, , minute, second] = match1;
         return `${year}:${month}:${day} ${hour}:${minute}:${second}`;
     }
 

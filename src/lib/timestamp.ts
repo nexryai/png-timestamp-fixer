@@ -27,7 +27,7 @@ export function extractTimestampFromFilename(filename: string, timezoneOffsetHou
 export function embedTimestampFromFilename(imageBuffer: Uint8Array, filename: string, timezoneOffsetHours: number, ignoreFilenameTimezone = true): Uint8Array {
     // Verify .png extension (case-insensitive)
     if (!filename.toLowerCase().endsWith(".png")) {
-        throw new Error("File is not a PNG: " + filename);
+        throw new Error(`File is not a PNG: ${filename}`);
     }
 
     // Try getting timestamp from PNG chunks first
@@ -42,7 +42,7 @@ export function embedTimestampFromFilename(imageBuffer: Uint8Array, filename: st
         throw new Error("Timestamp not found");
     }
 
-    console.log("Detected timestamp: " + timestamp);
+    console.log(`Detected timestamp: ${timestamp}`);
 
     return embedExifTime(timestamp, imageBuffer);
 }

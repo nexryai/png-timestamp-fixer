@@ -16,6 +16,10 @@ describe("extractTimestampString", () => {
             expect(extractTimestampString("VRChat_2026-08-02_01-14-45.265_7680x4320.png", 0)).toBe("2026:08:02 01:14:45");
         });
 
+        it("should parse a filename with underscore-separated date and time", () => {
+            expect(extractTimestampString("崩壊：スターレイル 2026_02_21 18_13_43.png", 0)).toBe("2026:02:21 18:13:43");
+        });
+
         it("should parse YYYYMMDDHHMMSS format", () => {
             expect(extractTimestampString("20250122202651", 0)).toBe("2025:01:22 20:26:51");
         });

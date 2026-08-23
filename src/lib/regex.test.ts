@@ -20,6 +20,10 @@ describe("extractTimestampString", () => {
             expect(extractTimestampString("崩壊：スターレイル 2026_02_21 18_13_43.png", 0)).toBe("2026:02:21 18:13:43");
         });
 
+        it("should parse a filename with a single-digit hour", () => {
+            expect(extractTimestampString("崩壊：スターレイル 2026_02_21 8_45_43.png", 0)).toBe("2026:02:21 08:45:43");
+        });
+
         it("should parse YYYYMMDDHHMMSS format", () => {
             expect(extractTimestampString("20250122202651", 0)).toBe("2025:01:22 20:26:51");
         });

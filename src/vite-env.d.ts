@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+declare const __COMMIT_HASH__: string;
+
 // File System Access API types
 interface FileSystemDirectoryHandle {
     getFileHandle(name: string, options?: { create?: boolean }): Promise<FileSystemFileHandle>;

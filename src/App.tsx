@@ -391,7 +391,16 @@ function App() {
             {pendingFile && <DateTimeDialog filename={pendingFile.file.name} imageUrl={pendingFile.objectUrl} onConfirm={handleDialogConfirm} onSkip={handleDialogSkip} />}
 
             {/* Footer */}
-            <p className="mt-6 text-center text-xs text-muted-foreground">©2025-2026 nexryai All rights reserved.</p>
+            <p className="mt-6 text-center text-xs text-muted-foreground">
+                ©2025-2026 nexryai All rights reserved. ·{" "}
+                <a className="underline-offset-2 hover:underline" href="https://github.com/nexryai/png-timestamp-fixer" target="_blank" rel="noreferrer">
+                    github.com/nexryai/png-timestamp-fixer
+                </a>{" "}
+                ·{" "}
+                <a className="font-mono underline-offset-2 hover:underline" href={`https://github.com/nexryai/png-timestamp-fixer/commit/${__COMMIT_HASH__}`} target="_blank" rel="noreferrer">
+                    {__COMMIT_HASH__}
+                </a>
+            </p>
         </div>
     );
 }

@@ -2,7 +2,7 @@
 
 GitHub ActionsからFirebase Hostingへ、サービスアカウントキーを保存せずにデプロイするための初回設定です。Google Cloud Shellで実行してください。
 
-このリポジトリのWorkflowは、GitHubのRepository Variablesにある次の値を参照します。
+このリポジトリのWorkflowは、GitHubのActions Secretsにある次の値を参照します。
 
 - `GCP_WORKLOAD_IDENTITY_PROVIDER`
 - `GCP_SERVICE_ACCOUNT`
